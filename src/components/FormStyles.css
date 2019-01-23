@@ -10,7 +10,7 @@
 .box-container {
   display: flex;
   flex-direction: column;
-  width: 330px;
+  width: 250px;
 }
 
 .box-container--login {
@@ -24,7 +24,7 @@
 }
 
 .box__header__logo {
-  font-size: 2em;
+  font-size: 1.5em;
 }
 
 .box__header__options {
@@ -147,22 +147,13 @@
   flex: 0.1;
 }
 
-/* todo */
-@media (max-width: 550px) {
+@media (min-width: 550px) {
   .box-container--signup,
   .box-container--login {
-    width: 250px;
-  }
-
-  .box-container--login {
-    height: 245px;
-  }
-
-  .box-container--signup {
-    height: 290px;
+    width: 330px;
   }
 
   .box__header__logo {
-    font-size: 1.5em;
+    font-size: 2em;
   }
 }
