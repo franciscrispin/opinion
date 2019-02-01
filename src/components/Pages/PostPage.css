@@ -1,0 +1,22 @@
+.post-wrapper {
+  margin-top: 72px;
+}
+
+.chip-wrapper {
+  align-self: flex-start;
+}
+
+.card-expanded-wrapper {
+  margin-top: -18px;
+}
+
+@media (min-width: 550px) {
+  .post-wrapper {
+    /* background: pink; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 550px;
+    margin: 88px auto 0 auto;
+  }
+}
