@@ -1,43 +1,43 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import Drawer from "./ToolbarDrawer";
-import Menu from "./ToolbarMenu";
-import Modal from "../Modal";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Drawer from './ToolbarDrawer';
+import Menu from './ToolbarMenu';
+import Modal from '../Modal';
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   button: {
-    textTransform: "capitalize"
+    textTransform: 'capitalize',
   },
   logo: {
-    color: "#fff",
-    textDecoration: "none",
-    [theme.breakpoints.down("xs")]: {
-      display: "none"
+    color: '#fff',
+    textDecoration: 'none',
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
     },
-    [theme.breakpoints.up("sm")]: {
-      display: "block"
-    }
-  }
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+    },
+  },
 });
 
 function ButtonAppBar(props) {
-  const { classes, userData, isAuthed } = props;
+  const { classes, userData } = props;
   return (
     <div className={classes.root}>
       <AppBar position="fixed">
         <Toolbar>
-          <Drawer userData={userData} isAuthed={isAuthed} />
+          <Drawer userData={userData} />
           <a href="/" className={classes.logo}>
             <Typography variant="title" color="inherit">
               Opinion
@@ -59,7 +59,7 @@ function ButtonAppBar(props) {
 }
 
 ButtonAppBar.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(ButtonAppBar);

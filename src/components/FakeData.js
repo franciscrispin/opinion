@@ -7,7 +7,7 @@ import {
   post3,
 } from './FakeDataPoints';
 
-export const isAuthed = true;
+export const isAuthed = false;
 export const userData = { username: 'Bill Chen', userImg: 'B' };
 
 export const postList = [post1, post2, post3];

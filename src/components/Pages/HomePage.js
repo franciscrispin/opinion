@@ -1,18 +1,20 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Toolbar from "../Toolbar/Toolbar";
-import SideNavigation from "../SideNavigation";
-import CardAddPost from "../Cards/CardAddPost";
-import ChipMinimizedPost, { ChipCategory } from "../Chips/ChipMinimizedPost";
-import CardMinimizedPost from "../Cards/CardMinimizedPost";
-import "./HomePage.css";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import Toolbar from '../Toolbar/Toolbar';
+import SideNavigation from '../SideNavigation';
+import CardAddPost from '../Cards/CardAddPost';
+import ChipMinimizedPost, { ChipCategory } from '../Chips/ChipMinimizedPost';
+import CardMinimizedPost from '../Cards/CardMinimizedPost';
+import './HomePage.css';
 
 const Category = ({ categoryData, category, tagList }) => {
   const dirtyTagsInCat = categoryData
-    .map(post => post.tagList)
+    .map((post) => post.tagList)
     .reduce((a, b) => [...a, ...b], []);
   const tagsInCat = [...new Set(dirtyTagsInCat)];
-  const chipTags = tagsInCat.map(tag => tagList[tag]);
+  const chipTags = tagsInCat.map((tag) => tagList[tag]);
   // categoryData.map(data => console.log(data))
 
   return (
@@ -25,7 +27,7 @@ const Category = ({ categoryData, category, tagList }) => {
         />
       </div>
       <div className="card-wrapper">
-        {categoryData.map(data => (
+        {categoryData.map((data) => (
           <CardMinimizedPost key={data.id} cardData={data} />
         ))}
       </div>
@@ -33,10 +35,12 @@ const Category = ({ categoryData, category, tagList }) => {
   );
 };
 
-const HomePage = ({ categoryData, userData, isAuthed, tagList }) => {
+const HomePage = ({ categoryData, userData, auth, tagList }) => {
+  if (!auth.uid) return <Redirect to="/login" />;
+
   return (
     <div>
-      <Toolbar userData={userData} isAuthed={isAuthed} />
+      <Toolbar userData={userData} />
       <div className="home-wrapper">
         <div className="spacer">
           <div className="navigation-wrapper">
@@ -63,7 +67,11 @@ const HomePage = ({ categoryData, userData, isAuthed, tagList }) => {
 };
 
 HomePage.propTypes = {
-  categoryData: PropTypes.array.isRequired
+  categoryData: PropTypes.array.isRequired,
 };
 
-export default HomePage;
+const mapStateToProps = (state) => ({
+  auth: state.firebase.auth,
+});
+
+export default connect(mapStateToProps)(HomePage);

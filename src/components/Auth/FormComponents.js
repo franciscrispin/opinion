@@ -1,22 +1,23 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import './FormStyles.css';
 
 export const FormHeader = ({ form }) => (
   <div className="box__header">
     <p className="box__header__logo">Opinion</p>
     <div className="box__header__options">
-      <a
-        href="/"
+      <NavLink
+        to="/signup"
         className={`options__default ${form === 'signup' ? 'active' : null}`}
       >
         Signup
-      </a>
-      <a
-        href="/"
+      </NavLink>
+      <NavLink
+        to="/login"
         className={`options__default ${form === 'login' ? 'active' : null}`}
       >
         Login
-      </a>
+      </NavLink>
     </div>
   </div>
 );
@@ -42,7 +43,7 @@ export const FormNameInput = () => (
     <div className="input-wrapper input-wrapper--signup">
       <DefaultInput placeholder="First Name" type="text" name="firstname" />
     </div>
-    <div className="spacer" />
+    <div className="form-spacer" />
     <div className="input-wrapper input-wrapper--signup">
       <DefaultInput placeholder="Last Name" type="text" name="lastname" />
     </div>

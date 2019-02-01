@@ -10,6 +10,7 @@ import './PostPage.css';
 const PostPage = ({ postList, tagList, ...props }) => {
   const postId = props.match.params.post_id;
   // coerce postId from string to number
+  // eslint-disable-next-line
   const selectedPost = postList.find((post) => post.id == postId);
   const postComments = selectedPost ? selectedPost.commentList : null;
   const tags = selectedPost.tagList;

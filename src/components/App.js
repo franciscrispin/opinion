@@ -5,15 +5,9 @@ import Post from './Pages/PostPage';
 import Profile from './Pages/ProfilePage';
 import Login from './Auth/Login';
 import Signup from './Auth/Signup';
-import {
-  isAuthed,
-  userData,
-  categoryData,
-  postList,
-  tagList,
-} from './FakeData';
+import { userData, categoryData, postList, tagList } from './FakeData';
 
-const Root = () => (
+const App = () => (
   <BrowserRouter>
     <Switch>
       <Redirect exact from="/" to="/home" />
@@ -26,7 +20,6 @@ const Root = () => (
             categoryData={categoryData}
             cardData={postList}
             userData={userData}
-            isAuthed={isAuthed}
             tagList={tagList}
           />
         )}
@@ -44,4 +37,4 @@ const Root = () => (
   </BrowserRouter>
 );
 
-export default Root;
+export default App;

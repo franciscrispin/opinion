@@ -1,29 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import Modal from '@material-ui/core/Modal';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import Input from '@material-ui/core/Input';
 import ChipAddPost from './Chips/ChipAddPost';
+import { addPost, clearTags } from '../actions/postActions';
 
 const styles = (theme) => ({
   cardHeader: {
     paddingTop: theme.spacing.unit / 2,
-  },
-  title: {
-    color: '#949494',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    '&:hover': {
-      color: '#2b6dad',
-    },
-    [theme.breakpoints.down('xs')]: {
-      fontSize: 'medium',
-    },
-    [theme.breakpoints.up('sm')]: {
-      fontSize: 'large',
-    },
   },
   paper: {
     position: 'absolute',
@@ -41,15 +30,10 @@ const styles = (theme) => ({
   },
   newPost: {
     padding: theme.spacing.unit * 2,
+    paddingBottom: 8,
     [theme.breakpoints.up('sm')]: {
       padding: theme.spacing.unit * 4,
-    },
-  },
-  input: {
-    width: '100%',
-    fontSize: 'small',
-    [theme.breakpoints.up('sm')]: {
-      fontSize: 'medium',
+      paddingBottom: 8,
     },
   },
   buttonContainer: {
@@ -79,9 +63,24 @@ const styles = (theme) => ({
   },
 });
 
-class NewPostModal extends React.Component {
+class AddPostModal extends React.Component {
   state = {
     open: false,
+    title: '',
+    description: '',
+  };
+
+  handleClick = () => {
+    this.props.addPost({
+      title: this.state.title,
+      description: this.state.description,
+    });
+  };
+
+  handleChange = (title) => (event) => {
+    this.setState({
+      [title]: event.target.value,
+    });
   };
 
   handleOpen = () => {
@@ -90,6 +89,7 @@ class NewPostModal extends React.Component {
 
   handleClose = () => {
     this.setState({ open: false });
+    this.props.clearTags({ 0: '', 1: '', 2: '', 3: '' });
   };
 
   render() {
@@ -109,12 +109,29 @@ class NewPostModal extends React.Component {
               <Typography variant="h6" id="modal-title">
                 Share your opinion
               </Typography>
-              <Input
-                placeholder="Some thought-provoking insight..."
-                multiline={true}
-                classes={{ root: classes.input }}
+              <TextField
+                id="title"
+                label="Title"
+                className={classes.title}
+                value={this.state.title}
+                onChange={this.handleChange('title')}
+                margin="normal"
+                variant="outlined"
+                fullWidth={true}
               />
-              <div style={{ marginLeft: -8, marginTop: 12, marginBottom: -16 }}>
+              <TextField
+                id="description"
+                label="Description"
+                multiline
+                rows="4"
+                className={classes.description}
+                value={this.state.description}
+                onChange={this.handleChange('description')}
+                margin="normal"
+                variant="outlined"
+                fullWidth={true}
+              />
+              <div>
                 <ChipAddPost />
               </div>
             </div>
@@ -129,6 +146,7 @@ class NewPostModal extends React.Component {
                 variant="contained"
                 color="primary"
                 className={classes.button}
+                onClick={this.handleClick}
               >
                 Share
               </Button>
@@ -140,8 +158,14 @@ class NewPostModal extends React.Component {
   }
 }
 
-NewPostModal.propTypes = {
+AddPostModal.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(NewPostModal);
+export default compose(
+  withStyles(styles),
+  connect(
+    null,
+    { addPost, clearTags }
+  )
+)(AddPostModal);

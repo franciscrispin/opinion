@@ -1,24 +1,96 @@
 import React from 'react';
-import {
-  FormHeader,
-  FormInput,
-  FormNameInput,
-  FormButton,
-} from './FormComponents';
+import { FormHeader } from './FormComponents';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { firebaseConnect } from 'react-redux-firebase';
+import { signup } from '../../actions/authActions';
 import './FormStyles.css';
 
-const Signup = () => (
-  <div className="box-wrapper">
-    <div className="box-container box-container--signup">
-      <FormHeader form="signup" />
-      <form className="form-wrapper">
-        <FormNameInput />
-        <FormInput placeholder="Email Address" type="email" name="email" />
-        <FormInput placeholder="Password" type="password" name="password" />
-        <FormButton text="Create account" />
-      </form>
-    </div>
-  </div>
-);
+class Signup extends React.Component {
+  state = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  };
 
-export default Signup;
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.signup(this.state, this.props.firebase);
+    console.log(this.state);
+  };
+
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  render() {
+    return (
+      <div className="box-wrapper">
+        <div className="box-container box-container--signup">
+          <FormHeader form="signup" />
+          <form className="form-wrapper" onSubmit={this.handleSubmit}>
+            <div className="input-name-wrapper">
+              <div className="input-wrapper input-wrapper--signup">
+                <input
+                  className="form__input"
+                  placeholder="First Name"
+                  type="text"
+                  name="firstName"
+                  onChange={this.handleChange}
+                  required
+                />
+              </div>
+              <div className="form-spacer" />
+              <div className="input-wrapper input-wrapper--signup">
+                <input
+                  className="form__input"
+                  placeholder="Last Name"
+                  type="text"
+                  name="lastName"
+                  onChange={this.handleChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="input-wrapper input-wrapper--login">
+              <input
+                className="form__input"
+                placeholder="Email Address"
+                type="email"
+                name="email"
+                onChange={this.handleChange}
+                required
+              />
+            </div>
+            <div className="input-wrapper input-wrapper--login">
+              <input
+                className="form__input"
+                placeholder="Password"
+                type="password"
+                name="password"
+                onChange={this.handleChange}
+                required
+              />
+            </div>
+            <button className="form__button">Create account</button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = (state) => ({
+  auth: state.firebase.auth,
+});
+
+export default compose(
+  firebaseConnect(),
+  connect(
+    mapStateToProps,
+    { signup }
+  )
+)(Signup);
