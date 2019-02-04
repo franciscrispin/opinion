@@ -11,16 +11,7 @@ import ChipMinimizedPost, { ChipCategory } from '../Chips/ChipMinimizedPost';
 import CardMinimizedPost from '../Cards/CardMinimizedPost';
 import './HomePage.css';
 
-const Category = ({ posts, category, tags }) => {
-  const tagsWithDups = posts
-    .map((post) => post.tagList)
-    .reduce((a, b) => [...a, ...b], []);
-  const tagsWoDups = [...new Set(tagsWithDups)];
-  // coerce id number to match id string
-  const tagNames = tagsWoDups.map(
-    (tagNum) => tags.find((tag) => tag.id == tagNum).tag
-  );
-
+const Category = ({ posts, category, tagNames }) => {
   if (posts.length) {
     return (
       <div>
@@ -49,10 +40,10 @@ Category.defaultProps = {
 Category.propTypes = {
   posts: PropTypes.array.isRequired,
   category: PropTypes.string.isRequired,
-  tags: PropTypes.array.isRequired,
+  tagNames: PropTypes.array.isRequired,
 };
 
-const HomePage = ({ auth, profile, categories, tags }) => {
+const HomePage = ({ auth, profile, categories }) => {
   if (!auth.uid) return <Redirect to="/login" />;
 
   if (isLoaded(profile) && categories.length) {
@@ -74,7 +65,7 @@ const HomePage = ({ auth, profile, categories, tags }) => {
                 key={category.id}
                 posts={category.posts}
                 category={category.name}
-                tags={tags}
+                tagNames={category.tagNames}
               />
             ))}
           </div>
@@ -89,14 +80,12 @@ const HomePage = ({ auth, profile, categories, tags }) => {
 
 HomePage.defaultProps = {
   categories: [],
-  tags: [],
 };
 
 HomePage.propTypes = {
   auth: PropTypes.object.isRequired,
   categories: PropTypes.array.isRequired,
   profile: PropTypes.object.isRequired,
-  tags: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -105,7 +94,6 @@ const mapStateToProps = (state) => {
     auth: state.firebase.auth,
     profile: state.firebase.profile,
     categories: state.firestore.ordered.categories,
-    tags: state.firestore.ordered.tags,
   };
 };
 
@@ -115,6 +103,6 @@ export default compose(
   firestoreConnect([
     // connect component to specific collection in firestore
     { collection: 'categories' },
-    { collection: 'tags' },
+    { collection: 'posts' },
   ])
 )(HomePage);

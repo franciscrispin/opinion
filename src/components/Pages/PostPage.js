@@ -1,43 +1,73 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { firestoreConnect } from 'react-redux-firebase';
 import Toolbar from '../Toolbar/Toolbar';
 import ChipFullPost from '../Chips/ChipFullPost';
 import CardFullPost from '../Cards/CardFullPost';
 import CardComment from '../Cards/CardComment';
 import './PostPage.css';
 
-const PostPage = ({ postList, tagList, ...props }) => {
+const PostPage = ({ profile, posts, ...props }) => {
   const postId = props.match.params.post_id;
-  // coerce postId from string to number
-  // eslint-disable-next-line
-  const selectedPost = postList.find((post) => post.id == postId);
-  const postComments = selectedPost ? selectedPost.commentList : null;
-  const tags = selectedPost.tagList;
 
-  return (
-    <div>
-      <Toolbar />
-      {postComments && (
-        <div className="post-wrapper">
-          <div className="chip-wrapper">
-            <ChipFullPost tags={tags} tagList={tagList} />
+  if (posts.length) {
+    // coerce postId from string to number
+    // eslint-disable-next-line
+    const post = posts.find((post) => post.id == postId);
+    const comments = post ? post.commentList : null;
+    const tagNames = post.tagNames;
+
+    return (
+      <div>
+        <Toolbar profile={profile} />
+        {posts && (
+          <div className="post-wrapper">
+            <div className="chip-wrapper">
+              <ChipFullPost tagNames={tagNames} />
+            </div>
+            <div className="card-expanded-wrapper">
+              <CardFullPost post={post} profile={profile} />
+              {comments &&
+                comments.map((comment) => (
+                  <CardComment key={comment.id} comment={comment} />
+                ))}
+            </div>
           </div>
-          <div className="card-expanded-wrapper">
-            <CardFullPost postData={selectedPost} />
-            {postComments.map((comment) => (
-              <CardComment key={comment.commentId} commentData={comment} />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  } else {
+    return null;
+  }
+};
+
+PostPage.defaultProps = {
+  posts: [],
 };
 
 PostPage.propTypes = {
-  postList: PropTypes.array.isRequired,
-  tagList: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
+  posts: PropTypes.array.isRequired,
 };
 
-export default withRouter(PostPage);
+const mapStateToProps = (state) => {
+  // console.log(state);
+  return {
+    auth: state.firebase.auth,
+    profile: state.firebase.profile,
+    posts: state.firestore.ordered.posts,
+  };
+};
+
+export default compose(
+  withRouter,
+  connect(mapStateToProps),
+  // connect component with firestoreReducer
+  firestoreConnect([
+    // connect component to specific collection in firestore
+    { collection: 'posts' },
+  ])
+)(PostPage);

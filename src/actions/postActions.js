@@ -5,6 +5,7 @@ export const addPost = (post) => async (dispatch, getState, getFirestore) => {
   const tags = getState().newPost.newPostTags;
   const tagList = [...new Set(Object.values(tags).filter((id) => id !== ''))];
   const categoryId = Math.floor(Math.random() * 3);
+
   const newPost = {
     ...post,
     authorId: authorId,

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import { FormHeader } from './FormComponents';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -27,7 +28,8 @@ class Signup extends React.Component {
   };
 
   render() {
-    const { authError } = this.props;
+    const { authError, auth } = this.props;
+    if (auth.uid) return <Redirect to="/" />;
 
     return (
       <div className="box-wrapper">

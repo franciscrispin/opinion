@@ -1,36 +1,41 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
-import red from "@material-ui/core/colors/red";
+import React from 'react';
+import PropTypes from 'prop-types';
+import moment from 'moment';
+import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Avatar from '@material-ui/core/Avatar';
+import red from '@material-ui/core/colors/red';
 
-const styles = theme => ({
+const styles = (theme) => ({
   userInfo: {
-    display: "flex",
-    alignItems: "center",
-    marginBottom: theme.spacing.unit * 2
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: theme.spacing.unit * 2,
   },
   avatar: {
     backgroundColor: red[500],
     width: 36,
-    height: 36
+    height: 36,
   },
   text: {
-    marginLeft: theme.spacing.unit
-  }
+    marginLeft: theme.spacing.unit,
+  },
 });
 
-const CardUserInfo = ({ classes, userData }) => {
-  const { username, date } = userData;
+const CardUserInfo = ({ classes, data }) => {
+  const { authorFirstName, authorLastName, initials, createdAt } = data;
   return (
     <div className={classes.userInfo}>
       <Avatar className={classes.avatar} aria-label="Profile Image">
-        R
+        {initials}
       </Avatar>
       <div className={classes.text}>
-        <Typography variant="subtitle2">{username}</Typography>
-        <Typography variant="caption">{date}</Typography>
+        <Typography variant="subtitle2">
+          {authorFirstName} {authorLastName}
+        </Typography>
+        <Typography variant="caption">
+          {moment(createdAt.toDate()).calendar()}
+        </Typography>
       </div>
     </div>
   );
@@ -38,7 +43,7 @@ const CardUserInfo = ({ classes, userData }) => {
 
 CardUserInfo.propTypes = {
   classes: PropTypes.object.isRequired,
-  userData: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(CardUserInfo);

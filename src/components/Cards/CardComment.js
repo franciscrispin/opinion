@@ -1,37 +1,37 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Divider from "@material-ui/core/Divider";
-import CardContent from "./CardContent";
-import CardActions from "./CardActions";
-import CardUserInfo from "./CardUserInfo";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Divider from '@material-ui/core/Divider';
+import CardContent from './CardContent';
+import CardActions from './CardActions';
+import CardUserInfo from './CardUserInfo';
 
-const styles = theme => ({
+const styles = (theme) => ({
   card: {
-    width: "100%",
-    maxWidth: 550
+    width: '100%',
+    maxWidth: 550,
   },
   cardHeader: {
-    paddingBottom: 0
+    paddingBottom: 0,
   },
   title: {
-    fontSize: "large",
-    fontWeight: "bold"
+    fontSize: 'large',
+    fontWeight: 'bold',
   },
   divider: {
     marginLeft: 16,
-    marginRight: 16
-  }
+    marginRight: 16,
+  },
 });
 
-const CardExpanded = ({ classes, commentData }) => {
+const CardExpanded = ({ classes, comment }) => {
   return (
     <div className={classes.card}>
       <CardContent
-        content={commentData.content}
-        children={<CardUserInfo userData={commentData} />}
+        content={comment.description}
+        children={<CardUserInfo data={comment} />}
       />
-      <CardActions cardData={commentData} showComments={false} />
+      <CardActions cardData={comment} showComments={false} />
       <Divider className={classes.divider} />
     </div>
   );
@@ -39,7 +39,7 @@ const CardExpanded = ({ classes, commentData }) => {
 
 CardExpanded.propTypes = {
   classes: PropTypes.object.isRequired,
-  commentData: PropTypes.object.isRequired
+  comment: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(CardExpanded);

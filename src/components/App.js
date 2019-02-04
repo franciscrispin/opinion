@@ -7,7 +7,6 @@ import Post from './Pages/PostPage';
 import Profile from './Pages/ProfilePage';
 import Login from './Auth/Login';
 import Signup from './Auth/Signup';
-import { postList, tagList } from './FakeData';
 
 class App extends React.Component {
   render() {
@@ -18,12 +17,7 @@ class App extends React.Component {
           <Switch>
             <Redirect exact from="/" to="/home" />
             <Route exact path="/home" component={Home} />
-            <Route
-              path="/post/:post_id"
-              render={(props) => (
-                <Post {...props} tagList={tagList} postList={postList} />
-              )}
-            />
+            <Route path="/post/:post_id" component={Post} />
             <Route path="/profile" component={Profile} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />

@@ -8,13 +8,17 @@ export const FormHeader = ({ form }) => (
     <div className="box__header__options">
       <NavLink
         to="/signup"
-        className={`options__default ${form === 'signup' ? 'active' : null}`}
+        className={`options__default ${
+          form === 'signup' ? 'form-active' : null
+        }`}
       >
         Signup
       </NavLink>
       <NavLink
         to="/login"
-        className={`options__default ${form === 'login' ? 'active' : null}`}
+        className={`options__default ${
+          form === 'login' ? 'form-active' : null
+        }`}
       >
         Login
       </NavLink>

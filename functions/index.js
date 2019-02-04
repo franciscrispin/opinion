@@ -11,16 +11,33 @@ admin.initializeApp(functions.config().firebase)
 
 exports.postCreated = functions.firestore
     .document('posts/{postId}')
-    .onCreate(doc => {
+    .onCreate(async (doc) => {
         const post = doc.data();
         const categoryId = post.categoryId
-        const postWithId = Object.assign(post, { id: doc.id })
-        console.log(doc)
-        console.log(doc.id)
-        return admin.firestore().collection('categories')
-            .doc(`${categoryId}`)
+
+        const snapshot = await admin.firestore().collection('tags').get()
+        const tags = snapshot.docs.map(tagDoc => ({ ...tagDoc.data(), id: tagDoc.id }))
+
+        // get tag names from tag ids
+        const tagNames = post.tagList.map(
+            (tagNum) => tags.find((tag) => tag.id == tagNum).tag
+        );
+
+        // add tag names to post 
+        await admin.firestore().collection('posts')
+            .doc(`${doc.id}`)
             .update({
-                posts: admin.firestore.FieldValue.arrayUnion(postWithId)
+                tagNames
             })
-            .then(doc => console.log(`post added to category ${categoryId}`, doc))
+
+        const postWithId = { ...post, id: doc.id, tagNames }
+
+        // add post and tag names to category
+        await admin.firestore().collection('categories')
+            .doc(`${categoryId}`) // remove string literal
+            .update({
+                posts: admin.firestore.FieldValue.arrayUnion(postWithId),
+                tagNames: admin.firestore.FieldValue.arrayUnion(...tagNames),
+            })
+        console.log(`post added to category ${categoryId}`, doc)
     })

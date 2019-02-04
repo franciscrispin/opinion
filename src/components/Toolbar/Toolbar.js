@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { NavLink } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -38,11 +39,11 @@ function ButtonAppBar(props) {
       <AppBar position="fixed">
         <Toolbar>
           <Drawer profile={profile} />
-          <a href="/" className={classes.logo}>
+          <NavLink to="/" className={classes.logo}>
             <Typography variant="title" color="inherit">
               Opinion
             </Typography>
-          </a>
+          </NavLink>
           <div className={classes.grow} />
           <Modal
             children={
