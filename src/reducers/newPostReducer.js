@@ -1,22 +1,20 @@
 import { combineReducers } from 'redux';
 
-const addPostReducer = (state = {}, action) => {
+const postReducer = (state = { postError: null }, action) => {
   switch (action.type) {
     case 'ADD_POST':
       console.log('add post');
       console.log(action.post);
-      // get state from action creator when adding post to firestore
-      // console.log({
-      //   ...action.post,
-      //   tags: Object.values(state).filter((id) => id !== ''),
-      // });
-      return state;
+      return { ...state, postError: null };
+    case 'ADD_POST_FAILURE':
+      console.log('add post failure');
+      return { ...state, postError: action.err.message };
     default:
       return state;
   }
 };
 
-const addPostTagsReducer = (state = {}, action) => {
+const tagsReducer = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_TAG':
       console.log('add tag');
@@ -31,8 +29,8 @@ const addPostTagsReducer = (state = {}, action) => {
 };
 
 const newPostReducer = combineReducers({
-  newPost: addPostReducer,
-  newPostTags: addPostTagsReducer,
+  newPost: postReducer,
+  newPostTags: tagsReducer,
 });
 
 export default newPostReducer;

@@ -1,53 +1,52 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Chip from "@material-ui/core/Chip";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import DoneIcon from "@material-ui/icons/Done";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Chip from '@material-ui/core/Chip';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import DoneIcon from '@material-ui/icons/Done';
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
-    display: "flex",
-    justifyContent: "flex-start",
-    flexWrap: "wrap",
-    padding: theme.spacing.unit / 2
+    display: 'flex',
+    justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    padding: theme.spacing.unit / 2,
   },
   chip: {
     margin: theme.spacing.unit / 2,
-    [theme.breakpoints.down("xs")]: {
-      fontSize: "0.8em"
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.8em',
     },
-    [theme.breakpoints.up("sm")]: {
-      fontSize: "0.9em"
-    }
+    [theme.breakpoints.up('sm')]: {
+      fontSize: '0.9em',
+    },
   },
   category: {
-    textTransform: "capitalize",
     marginLeft: theme.spacing.unit,
     marginBottom: theme.spacing.unit / 4,
-    [theme.breakpoints.down("xs")]: {
-      display: "block"
+    [theme.breakpoints.down('xs')]: {
+      display: 'block',
     },
-    [theme.breakpoints.up("md")]: {
-      display: "none"
-    }
+    [theme.breakpoints.up('md')]: {
+      display: 'none',
+    },
   },
   divider: {
     marginBottom: theme.spacing.unit,
     marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit
+    marginRight: theme.spacing.unit,
   },
   dividerBottom: {
     marginTop: theme.spacing.unit,
-    marginBottom: theme.spacing.unit * 2
+    marginBottom: theme.spacing.unit * 2,
   },
   label: {
-    textTransform: "capitalize"
-  }
+    textTransform: 'capitalize',
+  },
 });
 
-let ChipCategory = props => {
+let ChipCategory = (props) => {
   const { classes, category } = props;
   return (
     <div id={`${category}`}>
@@ -58,40 +57,55 @@ let ChipCategory = props => {
   );
 };
 
+ChipCategory.propTypes = {
+  classes: PropTypes.object.isRequired,
+  category: PropTypes.string.isRequired,
+};
+
 ChipCategory = withStyles(styles)(ChipCategory);
 
 export { ChipCategory };
 
 class ChipsArray extends React.Component {
   state = {
-    chipData: []
+    chips: [],
+  };
+
+  setChips = () => {
+    const chips = this.props.tags.map((tag) => ({
+      label: tag,
+      select: true,
+    }));
+    this.setState({ chips });
   };
 
   componentDidMount() {
-    const chipData = this.props.chipTags.map(tag => ({
-      label: tag,
-      select: true
-    }));
-    this.setState({ chipData });
+    this.setChips();
   }
 
-  handleDelete = data => () => {
-    const index = this.state.chipData.findIndex(
-      chip => chip.label === data.label
+  componentDidUpdate() {
+    if (this.state.chips.length !== this.props.tags.length) {
+      this.setChips();
+    }
+  }
+
+  handleDelete = (data) => () => {
+    const index = this.state.chips.findIndex(
+      (chip) => chip.label === data.label
     );
-    this.setState(prevState => {
-      const chipData = [
-        ...prevState.chipData.slice(0, index),
+    this.setState((prevState) => {
+      const chips = [
+        ...prevState.chips.slice(0, index),
         { ...data, select: !data.select },
-        ...prevState.chipData.slice(index + 1)
+        ...prevState.chips.slice(index + 1),
       ];
-      return { chipData };
+      return { chips };
     });
   };
 
   render() {
     const { classes } = this.props;
-    const chipData = this.state.chipData;
+    const chips = this.state.chips;
 
     return (
       <div>
@@ -100,8 +114,8 @@ class ChipsArray extends React.Component {
         </div>
         {this.props.children}
         <div className={classes.root}>
-          {chipData.length &&
-            chipData.map(data => (
+          {chips.length &&
+            chips.map((data) => (
               <Chip
                 key={data.label}
                 label={data.label}
@@ -126,7 +140,8 @@ class ChipsArray extends React.Component {
 }
 
 ChipsArray.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  tags: PropTypes.array.isRequired,
 };
 
 export default withStyles(styles)(ChipsArray);

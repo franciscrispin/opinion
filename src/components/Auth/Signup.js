@@ -27,11 +27,14 @@ class Signup extends React.Component {
   };
 
   render() {
+    const { authError } = this.props;
+
     return (
       <div className="box-wrapper">
         <div className="box-container box-container--signup">
           <FormHeader form="signup" />
-          <form className="form-wrapper" onSubmit={this.handleSubmit}>
+          {authError && <p className="error-message">{authError}</p>}
+          <form className="form-wrapper--signup" onSubmit={this.handleSubmit}>
             <div className="input-name-wrapper">
               <div className="input-wrapper input-wrapper--signup">
                 <input
@@ -85,6 +88,7 @@ class Signup extends React.Component {
 
 const mapStateToProps = (state) => ({
   auth: state.firebase.auth,
+  authError: state.auth.signup.authError,
 });
 
 export default compose(

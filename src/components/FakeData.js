@@ -18,8 +18,7 @@ export const tagList = {
   1: 'national service',
   2: 'psle',
   3: 'cpf',
-  4: 'aloysious pang',
-  5: 'inequality',
+  4: 'inequality',
 };
 
 export const categoryData = [

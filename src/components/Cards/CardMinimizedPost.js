@@ -1,60 +1,61 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { NavLink } from "react-router-dom";
-import { withStyles } from "@material-ui/core/styles";
-import classnames from "classnames";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import Collapse from "@material-ui/core/Collapse";
-import IconButton from "@material-ui/core/IconButton";
-import Divider from "@material-ui/core/Divider";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import CardParagraph from "./CardParagraph";
-import CardActions from "./CardActions";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { NavLink } from 'react-router-dom';
+import moment from 'moment';
+import { withStyles } from '@material-ui/core/styles';
+import classnames from 'classnames';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import Collapse from '@material-ui/core/Collapse';
+import IconButton from '@material-ui/core/IconButton';
+import Divider from '@material-ui/core/Divider';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import CardParagraph from './CardParagraph';
+import CardActions from './CardActions';
 
-const styles = theme => ({
+const styles = (theme) => ({
   card: {
-    width: "100%",
+    width: '100%',
     maxWidth: 550,
-    marginBottom: theme.spacing.unit * 2
+    marginBottom: theme.spacing.unit * 2,
   },
   cardHeader: {
-    paddingBottom: 0
+    paddingBottom: 0,
   },
   title: {
-    fontWeight: "bold",
-    [theme.breakpoints.down("xs")]: {
-      fontSize: "medium"
+    fontWeight: 'bold',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 'medium',
     },
-    [theme.breakpoints.up("sm")]: {
-      fontSize: "large"
-    }
+    [theme.breakpoints.up('sm')]: {
+      fontSize: 'large',
+    },
   },
   subheader: {
-    marginTop: theme.spacing.unit / 2
+    marginTop: theme.spacing.unit / 2,
   },
   expand: {
-    transform: "rotate(0deg)",
-    marginLeft: "auto",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest
-    })
+    transform: 'rotate(0deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
   },
   expandOpen: {
-    transform: "rotate(180deg)"
+    transform: 'rotate(180deg)',
   },
   navLink: {
-    textDecoration: "none",
-    color: "inherit"
-  }
+    textDecoration: 'none',
+    color: 'inherit',
+  },
 });
 
 const ExpandAction = ({ classExpand, classOpen, onClick, expanded }) => {
   return (
     <IconButton
       className={classnames(classExpand, {
-        [classOpen]: expanded
+        [classOpen]: expanded,
       })}
       onClick={onClick}
       aria-expanded={expanded}
@@ -69,12 +70,19 @@ class CardHome extends React.Component {
   state = { expanded: false };
 
   handleExpandClick = () => {
-    this.setState(state => ({ expanded: !state.expanded }));
+    this.setState((state) => ({ expanded: !state.expanded }));
   };
 
   render() {
-    const { classes, cardData } = this.props;
-    const { id, title, username, date, content } = cardData;
+    const { classes, posts } = this.props;
+    const {
+      id,
+      title,
+      authorFirstName,
+      authorLastName,
+      createdAt,
+      description,
+    } = posts;
 
     return (
       <Card className={classes.card}>
@@ -85,15 +93,16 @@ class CardHome extends React.Component {
             </NavLink>
           }
           subheader={
-            <NavLink className={classes.navLink} to={"/profile"}>
-              {username}, {date}
+            <NavLink className={classes.navLink} to={'/profile'}>
+              {authorFirstName} {authorLastName},{' '}
+              {moment(createdAt.toDate()).calendar()}
             </NavLink>
           }
           classes={{ title: classes.title, subheader: classes.subheader }}
           className={classes.cardHeader}
         />
         <CardActions
-          cardData={cardData}
+          cardData={posts}
           children={
             <ExpandAction
               classExpand={classes.expand}
@@ -106,7 +115,7 @@ class CardHome extends React.Component {
         <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
           <Divider />
           <CardContent>
-            <CardParagraph content={content} />
+            <CardParagraph content={description} />
           </CardContent>
         </Collapse>
       </Card>
@@ -116,7 +125,7 @@ class CardHome extends React.Component {
 
 CardHome.propTypes = {
   classes: PropTypes.object.isRequired,
-  cardData: PropTypes.object.isRequired
+  posts: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(CardHome);

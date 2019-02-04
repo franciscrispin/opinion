@@ -75,6 +75,7 @@ class AddPostModal extends React.Component {
       title: this.state.title,
       description: this.state.description,
     });
+    this.handleClose();
   };
 
   handleChange = (title) => (event) => {

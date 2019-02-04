@@ -21,7 +21,7 @@
 }
 
 .box-container--login {
-  height: 245px;
+  /* height: 245px; */
 }
 
 .box__header {
@@ -54,11 +54,26 @@
   color: #fff;
 }
 
-.form-wrapper {
+.error-message {
+  color: #CE4C55;
+  margin-top: 8px;
+  font-size: 0.875em;
+}
+
+.form-wrapper--login,
+.form-wrapper--signup {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.form-wrapper--login {
+  height: 185px;
+}
+
+.form-wrapper--signup {
+  height: 247px; 
 }
 
 .input-name-wrapper,
@@ -139,7 +154,7 @@
 /* signup page */
 
 .box-container--signup  {
-  height: 290px;
+  /* height: 290px; */
 }
 
 .input-name-wrapper {
@@ -162,5 +177,9 @@
 
   .box__header__logo {
     font-size: 2em;
+  }
+
+  .error-message {
+    font-size: 1em;
   }
 }

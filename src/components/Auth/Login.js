@@ -22,14 +22,15 @@ class Login extends React.Component {
   };
 
   render() {
-    const { auth } = this.props;
+    const { auth, authError } = this.props;
     if (auth.uid) return <Redirect to="/" />;
 
     return (
       <div className="box-wrapper">
         <div className="box-container box-container--login">
           <FormHeader form="login" />
-          <form className="form-wrapper" onSubmit={this.handleSubmit}>
+          {authError && <p className="error-message">{authError}</p>}
+          <form className="form-wrapper--login" onSubmit={this.handleSubmit}>
             <div className="input-wrapper input-wrapper--login">
               <input
                 className="form__input"
@@ -65,6 +66,7 @@ class Login extends React.Component {
 
 const mapStateToProps = (state) => ({
   auth: state.firebase.auth,
+  authError: state.auth.login.authError,
 });
 
 export default compose(

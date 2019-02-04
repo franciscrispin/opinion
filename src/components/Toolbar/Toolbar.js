@@ -32,12 +32,12 @@ const styles = (theme) => ({
 });
 
 function ButtonAppBar(props) {
-  const { classes, userData } = props;
+  const { classes, profile } = props;
   return (
     <div className={classes.root}>
       <AppBar position="fixed">
         <Toolbar>
-          <Drawer userData={userData} />
+          <Drawer profile={profile} />
           <a href="/" className={classes.logo}>
             <Typography variant="title" color="inherit">
               Opinion
@@ -60,6 +60,7 @@ function ButtonAppBar(props) {
 
 ButtonAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(ButtonAppBar);

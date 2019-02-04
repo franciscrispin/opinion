@@ -5,18 +5,21 @@ import { NavHashLink } from 'react-router-hash-link';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { firebaseConnect } from 'react-redux-firebase';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import IconButton from '@material-ui/core/IconButton';
 import ProfileIcon from '@material-ui/icons/AccountCircle';
 import TrendingIcon from '@material-ui/icons/TrendingUp';
 import ControversialIcon from '@material-ui/icons/OfflineBolt';
 import DeepDiveIcon from '@material-ui/icons/AllOut';
 import MenuIcon from '@material-ui/icons/Menu';
-import IconButton from '@material-ui/core/IconButton';
+import LogoutIcon from '@material-ui/icons/ExitToApp';
+import { logout } from '../../actions/authActions';
 
 const styles = (theme) => ({
   list: {
@@ -46,6 +49,10 @@ class MobileDrawer extends React.Component {
     open: false,
   };
 
+  handleClick = () => {
+    this.props.logout(this.props.firebase);
+  };
+
   toggleDrawer = (open) => () => {
     this.setState({
       open,
@@ -53,7 +60,7 @@ class MobileDrawer extends React.Component {
   };
 
   render() {
-    const { classes, userData, auth } = this.props;
+    const { classes, profile, auth } = this.props;
     const loggedIn = auth.uid;
 
     const sideList = (
@@ -65,7 +72,11 @@ class MobileDrawer extends React.Component {
                 <ProfileIcon />
               </ListItemIcon>
               <ListItemText
-                primary={loggedIn ? userData.username : 'Login / Signup'}
+                primary={
+                  loggedIn
+                    ? `${profile.firstName} ${profile.lastName}`
+                    : 'Login / Signup'
+                }
               />
             </ListItem>
           </NavLink>
@@ -95,6 +106,17 @@ class MobileDrawer extends React.Component {
             </NavHashLink>
           ))}
         </List>
+        <Divider />
+        {loggedIn && (
+          <List>
+            <ListItem button onClick={this.handleClick}>
+              <ListItemIcon>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItem>
+          </List>
+        )}
       </div>
     );
 
@@ -125,6 +147,7 @@ class MobileDrawer extends React.Component {
 
 MobileDrawer.propTypes = {
   classes: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -136,8 +159,9 @@ const mapStateToProps = (state) => {
 
 export default compose(
   withStyles(styles),
+  firebaseConnect(),
   connect(
     mapStateToProps,
-    null
+    { logout }
   )
 )(MobileDrawer);

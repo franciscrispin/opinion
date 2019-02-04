@@ -53,15 +53,15 @@ const styles = (theme) => ({
   },
 });
 
-const CardNewPost = ({ classes, userData }) => (
+const CardNewPost = ({ classes, profile }) => (
   <Card className={classes.card}>
     <NavLink className={classes.navLink} to={'/profile'}>
       <div className={classes.userInfo}>
         <Avatar className={classes.avatar} aria-label="Opinion Post">
-          {userData.userImg}
+          {profile.initials}
         </Avatar>
         <Typography className={classes.username} variant="subtitle2">
-          {userData.username}
+          {`${profile.firstName} ${profile.lastName}`}
         </Typography>
       </div>
     </NavLink>
@@ -79,7 +79,7 @@ const CardNewPost = ({ classes, userData }) => (
 
 CardNewPost.propTypes = {
   classes: PropTypes.object.isRequired,
-  userData: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(CardNewPost);
