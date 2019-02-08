@@ -25,7 +25,7 @@ const styles = (theme) => ({
     backgroundColor: red[500],
     width: 18,
     height: 18,
-    fontSize: 'small',
+    fontSize: 10,
   },
   username: {
     marginLeft: theme.spacing.unit / 1.5,
@@ -58,7 +58,7 @@ const CardNewPost = ({ classes, profile }) => (
     <NavLink className={classes.navLink} to={'/profile'}>
       <div className={classes.userInfo}>
         <Avatar className={classes.avatar} aria-label="Opinion Post">
-          {profile.initials}
+          {profile.initials[0]}
         </Avatar>
         <Typography className={classes.username} variant="subtitle2">
           {`${profile.firstName} ${profile.lastName}`}

@@ -15,13 +15,13 @@
   flex-direction: column;
 }
 
-.layout-wrapper,
-.card-wrapper {
-  align-items: center;
+.layout-wrapper {
+  width: 600px;
+  align-items: stretch
 }
 
 .newpost-wrapper {
-  align-self: stretch;
+  margin: 0 auto;
 }
 
 .newpost-wrapper,
@@ -43,6 +43,10 @@ xl, extra-large: 1920px or larger */
 @media (min-width: 600px) {
   .home-wrapper {
     margin-top: 80px;
+  }
+
+  .layout-wrapper {
+    width: 600px;
   }
 }
 

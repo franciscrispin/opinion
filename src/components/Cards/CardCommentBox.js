@@ -29,6 +29,7 @@ const styles = (theme) => ({
     backgroundColor: red[500],
     width: 36,
     height: 36,
+    fontSize: 16,
   },
   inputContainer: {
     background: '#fff',
@@ -81,6 +82,7 @@ class CommentBox extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.addComment(this.state.comment, this.props.match.params.post_id);
+    this.setState({ comment: '' });
   };
 
   render() {

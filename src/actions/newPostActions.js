@@ -2,7 +2,7 @@ export const addPost = (post) => async (dispatch, getState, getFirestore) => {
   const firestore = getFirestore();
   const profile = getState().firebase.profile;
   const authorId = getState().firebase.auth.uid;
-  const tags = getState().newPost.newPostTags;
+  const tags = getState().newPost.newPostChips;
   const tagList = [...new Set(Object.values(tags).filter((id) => id !== ''))];
   const categoryId = Math.floor(Math.random() * 3);
 
@@ -19,22 +19,21 @@ export const addPost = (post) => async (dispatch, getState, getFirestore) => {
     tagList,
     upvotes: 0,
   };
-  console.log(newPost);
 
   try {
     await firestore.collection('posts').add(newPost);
-    dispatch({ type: 'ADD_POST', post });
+    dispatch({ type: 'ADD_POST' });
   } catch (err) {
     dispatch({ type: 'ADD_POST_FAILURE', err });
   }
 };
 
-export const addTag = (tag) => ({
-  type: 'ADD_TAG',
-  tag,
+export const addChip = (chip) => ({
+  type: 'ADD_CHIP',
+  chip,
 });
 
-export const clearTags = (newTags) => ({
-  type: 'CLEAR_TAGS',
-  newTags,
+export const clearChips = (newChips) => ({
+  type: 'CLEAR_CHIPS',
+  newChips,
 });

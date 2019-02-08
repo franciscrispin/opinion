@@ -8,7 +8,8 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import ChipAddPost from './Chips/ChipAddPost';
-import { addPost, clearTags } from '../actions/postActions';
+import { addPost, clearChips } from '../actions/newPostActions';
+import { getUpvotes } from '../actions/postButtonActions';
 
 const styles = (theme) => ({
   cardHeader: {
@@ -70,11 +71,13 @@ class AddPostModal extends React.Component {
     description: '',
   };
 
-  handleClick = () => {
+  handleSubmit = () => {
     this.props.addPost({
       title: this.state.title,
       description: this.state.description,
     });
+    this.props.getUpvotes();
+    this.setState({ title: '', description: '' });
     this.handleClose();
   };
 
@@ -90,7 +93,7 @@ class AddPostModal extends React.Component {
 
   handleClose = () => {
     this.setState({ open: false });
-    this.props.clearTags({ 0: '', 1: '', 2: '', 3: '' });
+    this.props.clearChips({ 0: '', 1: '', 2: '', 3: '' });
   };
 
   render() {
@@ -147,7 +150,7 @@ class AddPostModal extends React.Component {
                 variant="contained"
                 color="primary"
                 className={classes.button}
-                onClick={this.handleClick}
+                onClick={this.handleSubmit}
               >
                 Share
               </Button>
@@ -167,6 +170,6 @@ export default compose(
   withStyles(styles),
   connect(
     null,
-    { addPost, clearTags }
+    { addPost, clearChips, getUpvotes }
   )
 )(AddPostModal);

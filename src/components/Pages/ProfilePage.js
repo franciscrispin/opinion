@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { firestoreConnect, isLoaded } from 'react-redux-firebase';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
@@ -7,8 +10,8 @@ import Avatar from '@material-ui/core/Avatar';
 import red from '@material-ui/core/colors/red';
 import Toolbar from '../Toolbar/Toolbar';
 import CardMinimizedPost from '../Cards/CardMinimizedPost';
-
-import { postList } from '../FakeData';
+import { getUpvotes } from '../../actions/postButtonActions';
+import { sortPosts } from '../../utils';
 
 const styles = (theme) => ({
   profileWrapper: {
@@ -58,33 +61,72 @@ const styles = (theme) => ({
   },
 });
 
-const Profile = ({ classes }) => (
-  <div>
-    <Toolbar />
-    <div className={classes.profileWrapper}>
-      <div className={classes.profileHeader}>
-        <Avatar className={classes.avatar} aria-label="Opinion Post">
-          F
-        </Avatar>
-        <Typography variant="h5" className={classes.username}>
-          Francis Goh
-        </Typography>
-      </div>
-      <Divider className={classes.headerDivider} />
-      <div>
-        <Typography variant="subheading">Francis's Posts</Typography>
-        <Divider className={classes.bodyDivider} light={true} />
-        {postList &&
-          postList.map((data) => (
-            <CardMinimizedPost key={data.id} cardData={data} />
-          ))}
-      </div>
-    </div>
-  </div>
-);
+class Profile extends React.Component {
+  componentDidMount() {
+    this.props.getUpvotes();
+  }
+
+  render() {
+    const { classes, profile, users, auth, upvotes } = this.props;
+
+    if (isLoaded(profile) && users) {
+      const { posts } = users[auth.uid];
+      const sortedPosts = sortPosts(posts);
+
+      return (
+        <div>
+          <Toolbar profile={profile} />
+          <div className={classes.profileWrapper}>
+            <div className={classes.profileHeader}>
+              <Avatar className={classes.avatar} aria-label="Opinion Post">
+                F
+              </Avatar>
+              <Typography variant="h5" className={classes.username}>
+                {profile.firstName} {profile.lastName}
+              </Typography>
+            </div>
+            <Divider className={classes.headerDivider} />
+            <div>
+              <Typography variant="subheading">
+                {profile.firstName}'s Posts
+              </Typography>
+              <Divider className={classes.bodyDivider} light={true} />
+              {sortedPosts &&
+                sortedPosts.map((post) => (
+                  <CardMinimizedPost
+                    key={post.id}
+                    posts={post}
+                    upvotes={upvotes}
+                  />
+                ))}
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  }
+}
 
 Profile.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Profile);
+const mapStateToProps = (state) => {
+  return {
+    auth: state.firebase.auth,
+    profile: state.firebase.profile,
+    users: state.firestore.data.users,
+    upvotes: state.upvotes.upvotes,
+  };
+};
+
+export default compose(
+  withStyles(styles),
+  connect(
+    mapStateToProps,
+    { getUpvotes }
+  ),
+  firestoreConnect([{ collection: 'users' }])
+)(Profile);

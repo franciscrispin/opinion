@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import DoneIcon from '@material-ui/icons/Done';
+import { filterChips } from '../../actions/chipActions';
 
 const styles = (theme) => ({
   root: {
@@ -77,6 +80,7 @@ class ChipsArray extends React.Component {
       select: true,
     }));
     this.setState({ chips });
+    this.props.filterChips(chips, this.props.category);
   };
 
   componentDidMount() {
@@ -99,6 +103,7 @@ class ChipsArray extends React.Component {
         { ...data, select: !data.select },
         ...prevState.chips.slice(index + 1),
       ];
+      this.props.filterChips(chips, this.props.category);
       return { chips };
     });
   };
@@ -106,6 +111,20 @@ class ChipsArray extends React.Component {
   render() {
     const { classes } = this.props;
     const chips = this.state.chips;
+    const displayChips = chips.length
+      ? chips.map((data) => (
+          <Chip
+            key={data.label}
+            label={data.label}
+            onDelete={this.handleDelete(data)}
+            className={classes.chip}
+            deleteIcon={data.select ? <DoneIcon /> : null}
+            color="primary"
+            variant="outlined"
+            classes={{ label: classes.label }}
+          />
+        ))
+      : null;
 
     return (
       <div>
@@ -113,21 +132,7 @@ class ChipsArray extends React.Component {
           <Divider />
         </div>
         {this.props.children}
-        <div className={classes.root}>
-          {chips.length &&
-            chips.map((data) => (
-              <Chip
-                key={data.label}
-                label={data.label}
-                onDelete={this.handleDelete(data)}
-                className={classes.chip}
-                deleteIcon={data.select ? <DoneIcon /> : null}
-                color="primary"
-                variant="outlined"
-                classes={{ label: classes.label }}
-              />
-            ))}
-        </div>
+        <div className={classes.root}>{displayChips}</div>
         <div>
           <Divider
             className={classes.divider}
@@ -144,4 +149,10 @@ ChipsArray.propTypes = {
   tags: PropTypes.array.isRequired,
 };
 
-export default withStyles(styles)(ChipsArray);
+export default compose(
+  withStyles(styles),
+  connect(
+    null,
+    { filterChips }
+  )
+)(ChipsArray);

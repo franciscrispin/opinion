@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import { addTag } from '../../actions/postActions';
+import { addChip } from '../../actions/newPostActions';
 
 const styles = (theme) => ({
   root: {
@@ -49,7 +49,7 @@ class Selector extends React.Component {
 
   handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
-    this.props.addTag({
+    this.props.addChip({
       chipId: this.props.chipId,
       topicId: event.target.value,
     });
@@ -93,6 +93,6 @@ export default compose(
   withStyles(styles),
   connect(
     null,
-    { addTag }
+    { addChip }
   )
 )(Selector);

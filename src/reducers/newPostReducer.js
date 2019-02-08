@@ -3,24 +3,20 @@ import { combineReducers } from 'redux';
 const postReducer = (state = { postError: null }, action) => {
   switch (action.type) {
     case 'ADD_POST':
-      console.log('add post');
       return { ...state, postError: null };
     case 'ADD_POST_FAILURE':
-      console.log('add post failure');
       return { ...state, postError: action.err.message };
     default:
       return state;
   }
 };
 
-const tagsReducer = (state = {}, action) => {
+const chipReducer = (state = {}, action) => {
   switch (action.type) {
-    case 'ADD_TAG':
-      console.log('add tag');
-      return { ...state, [action.tag.chipId]: action.tag.topicId };
-    case 'CLEAR_TAGS':
-      console.log('clear tags');
-      return { ...state, ...action.newTags };
+    case 'ADD_CHIP':
+      return { ...state, [action.chip.chipId]: action.chip.topicId };
+    case 'CLEAR_CHIPS':
+      return { ...state, ...action.newChips };
     default:
       return state;
   }
@@ -28,7 +24,7 @@ const tagsReducer = (state = {}, action) => {
 
 const newPostReducer = combineReducers({
   newPost: postReducer,
-  newPostTags: tagsReducer,
+  newPostChips: chipReducer,
 });
 
 export default newPostReducer;

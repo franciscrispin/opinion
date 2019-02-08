@@ -20,13 +20,15 @@ export const addComment = (comment, postId) => async (
   try {
     // add comment to collection
     const doc = await firestore.collection('comments').add(newComment);
+
     // increment number of comments
     const snapshot = await firestore
       .collection('posts')
       .doc(postId)
       .get();
     let comments = snapshot.data().comments + 1;
-    // add new comment and updated number of comments to post
+
+    // add new comment and comment id to post
     await firestore
       .collection('posts')
       .doc(postId)
@@ -38,7 +40,7 @@ export const addComment = (comment, postId) => async (
         }),
       });
 
-    dispatch({ type: 'ADD_COMMENT', comment, postId });
+    dispatch({ type: 'ADD_COMMENT' });
   } catch (err) {
     dispatch({ type: 'ADD_COMMENT_FAILURE', err });
   }

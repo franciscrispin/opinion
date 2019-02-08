@@ -14,6 +14,24 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CardParagraph from './CardParagraph';
 import CardActions from './CardActions';
 
+const truncate = (text) => {
+  const maxLen = 115;
+  if (text.length > maxLen) {
+    const lastWordIdx = text
+      .split('')
+      .slice(0, maxLen)
+      .join('')
+      .lastIndexOf(' ');
+    return (
+      text
+        .split('')
+        .slice(0, lastWordIdx)
+        .join('') + ' ...'
+    );
+  }
+  return text;
+};
+
 const styles = (theme) => ({
   card: {
     width: '100%',
@@ -74,7 +92,7 @@ class CardHome extends React.Component {
   };
 
   render() {
-    const { classes, posts } = this.props;
+    const { classes, posts, upvotes } = this.props;
     const {
       id,
       title,
@@ -83,13 +101,14 @@ class CardHome extends React.Component {
       createdAt,
       description,
     } = posts;
+    const truncatedTitle = truncate(title);
 
     return (
       <Card className={classes.card}>
         <CardHeader
           title={
             <NavLink className={classes.navLink} to={`/post/${id}`}>
-              {title}
+              {truncatedTitle}
             </NavLink>
           }
           subheader={
@@ -103,6 +122,7 @@ class CardHome extends React.Component {
         />
         <CardActions
           cardData={posts}
+          upvotes={upvotes}
           children={
             <ExpandAction
               classExpand={classes.expand}

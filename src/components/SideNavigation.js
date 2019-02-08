@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import { withRouter } from 'react-router-dom';
 import { NavHashLink as NavLink } from 'react-router-hash-link';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -10,6 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import TrendingIcon from '@material-ui/icons/TrendingUp';
 import ControversialIcon from '@material-ui/icons/OfflineBolt';
 import DeepDiveIcon from '@material-ui/icons/AllOut';
+import { formatCategory } from '../utils';
 
 const styles = (theme) => ({
   root: {
@@ -61,7 +61,7 @@ class SelectedListItem extends React.Component {
 
   render() {
     const { classes } = this.props;
-    // console.log(this.props.history);
+
     return (
       <div className={classes.root}>
         <List component="nav">
@@ -72,7 +72,7 @@ class SelectedListItem extends React.Component {
               scroll={(el) =>
                 el.scrollIntoView({ behavior: 'smooth', block: 'center' })
               }
-              to={`/home/#${item.label}`}
+              to={`/home/#${formatCategory(item.label)}`}
             >
               <ListItem
                 className={classes.listItem}

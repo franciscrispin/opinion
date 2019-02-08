@@ -16,6 +16,7 @@ const styles = (theme) => ({
     backgroundColor: red[500],
     width: 36,
     height: 36,
+    fontSize: 16,
   },
   text: {
     marginLeft: theme.spacing.unit,

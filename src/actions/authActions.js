@@ -11,7 +11,7 @@ export const login = (credentials, firebase) => async (dispatch) => {
 
 export const logout = (firebase) => async (dispatch) => {
   await firebase.auth().signOut();
-  dispatch({ type: 'LOGOUT_SUCCESS' });
+  dispatch({ type: 'LOGOUT' });
 };
 
 export const signup = (newUser, firebase) => async (
@@ -20,6 +20,7 @@ export const signup = (newUser, firebase) => async (
   getFirestore
 ) => {
   const firestore = getFirestore();
+
   try {
     const response = await firebase
       .auth()
@@ -31,6 +32,7 @@ export const signup = (newUser, firebase) => async (
         firstName: newUser.firstName,
         lastName: newUser.lastName,
         initials: newUser.firstName[0] + newUser.lastName[0],
+        posts: [],
       });
     dispatch({ type: 'SIGNUP_SUCCESS' });
   } catch (err) {
