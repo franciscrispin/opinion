@@ -9,7 +9,6 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import ChipAddPost from './Chips/ChipAddPost';
 import { addPost, clearChips } from '../actions/newPostActions';
-import { getUpvotes } from '../actions/postButtonActions';
 
 const styles = (theme) => ({
   cardHeader: {
@@ -76,7 +75,6 @@ class AddPostModal extends React.Component {
       title: this.state.title,
       description: this.state.description,
     });
-    this.props.getUpvotes();
     this.setState({ title: '', description: '' });
     this.handleClose();
   };
@@ -170,6 +168,6 @@ export default compose(
   withStyles(styles),
   connect(
     null,
-    { addPost, clearChips, getUpvotes }
+    { addPost, clearChips }
   )
 )(AddPostModal);

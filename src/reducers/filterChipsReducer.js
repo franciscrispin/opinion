@@ -5,7 +5,6 @@ const createFilterReducer = (type) => {
   const filter = (state = {}, action) => {
     switch (action.type) {
       case `FILTER_${TYPE}`:
-        console.log(`filter ${TYPE}`);
         return { ...state, ...action.chipFilter };
       default:
         return state;

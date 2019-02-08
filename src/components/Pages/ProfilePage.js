@@ -10,7 +10,6 @@ import Avatar from '@material-ui/core/Avatar';
 import red from '@material-ui/core/colors/red';
 import Toolbar from '../Toolbar/Toolbar';
 import CardMinimizedPost from '../Cards/CardMinimizedPost';
-import { getUpvotes } from '../../actions/postButtonActions';
 import { sortPosts } from '../../utils';
 
 const styles = (theme) => ({
@@ -62,12 +61,8 @@ const styles = (theme) => ({
 });
 
 class Profile extends React.Component {
-  componentDidMount() {
-    this.props.getUpvotes();
-  }
-
   render() {
-    const { classes, profile, users, auth, upvotes } = this.props;
+    const { classes, profile, users, auth } = this.props;
 
     if (isLoaded(profile) && users) {
       const { posts } = users[auth.uid];
@@ -93,11 +88,7 @@ class Profile extends React.Component {
               <Divider className={classes.bodyDivider} light={true} />
               {sortedPosts &&
                 sortedPosts.map((post) => (
-                  <CardMinimizedPost
-                    key={post.id}
-                    posts={post}
-                    upvotes={upvotes}
-                  />
+                  <CardMinimizedPost key={post.id} posts={post} />
                 ))}
             </div>
           </div>
@@ -118,15 +109,11 @@ const mapStateToProps = (state) => {
     auth: state.firebase.auth,
     profile: state.firebase.profile,
     users: state.firestore.data.users,
-    upvotes: state.upvotes.upvotes,
   };
 };
 
 export default compose(
   withStyles(styles),
-  connect(
-    mapStateToProps,
-    { getUpvotes }
-  ),
+  connect(mapStateToProps),
   firestoreConnect([{ collection: 'users' }])
 )(Profile);

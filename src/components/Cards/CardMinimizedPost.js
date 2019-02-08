@@ -92,7 +92,7 @@ class CardHome extends React.Component {
   };
 
   render() {
-    const { classes, posts, upvotes } = this.props;
+    const { classes, posts } = this.props;
     const {
       id,
       title,
@@ -122,7 +122,6 @@ class CardHome extends React.Component {
         />
         <CardActions
           cardData={posts}
-          upvotes={upvotes}
           children={
             <ExpandAction
               classExpand={classes.expand}

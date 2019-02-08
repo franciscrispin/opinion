@@ -7,7 +7,7 @@ import Chip from '@material-ui/core/Chip';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import DoneIcon from '@material-ui/icons/Done';
-import { filterChips } from '../../actions/chipActions';
+import { filterChips } from '../../actions/filterChipActions';
 
 const styles = (theme) => ({
   root: {

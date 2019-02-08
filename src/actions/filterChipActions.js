@@ -4,5 +4,6 @@ export const filterChips = (chips, category) => {
     (a, b) => ({ ...a, [b.label]: b.select }),
     {}
   );
+
   return { type: `FILTER_${CATEGORY}`, chipFilter };
 };

@@ -10,11 +10,10 @@ import SideNavigation from '../SideNavigation';
 import CardAddPost from '../Cards/CardAddPost';
 import ChipMinimizedPost, { ChipCategory } from '../Chips/ChipMinimizedPost';
 import CardMinimizedPost from '../Cards/CardMinimizedPost';
-import { getUpvotes } from '../../actions/postButtonActions';
 import { formatCategory, sortPosts } from '../../utils';
 import './HomePage.css';
 
-const Category = ({ posts, category, tagNames, upvotes, chipFilter }) => {
+const Category = ({ posts, category, tagNames, chipFilter }) => {
   // sort post by date created
   const sortedPosts = sortPosts(posts);
 
@@ -30,7 +29,7 @@ const Category = ({ posts, category, tagNames, upvotes, chipFilter }) => {
 
   const displayPosts = filteredPosts.length ? (
     filteredPosts.map((post) => (
-      <CardMinimizedPost key={post.id} posts={post} upvotes={upvotes} />
+      <CardMinimizedPost key={post.id} posts={post} />
     ))
   ) : (
     <Typography variant="subheading" paragraph>
@@ -60,17 +59,12 @@ Category.propTypes = {
   posts: PropTypes.array.isRequired,
   category: PropTypes.string.isRequired,
   tagNames: PropTypes.array.isRequired,
-  upvotes: PropTypes.array.isRequired,
   chipFilter: PropTypes.object.isRequired,
 };
 
 class HomePage extends React.Component {
-  componentDidMount() {
-    this.props.getUpvotes();
-  }
-
   render() {
-    const { auth, profile, categories, upvotes, chipFilter } = this.props;
+    const { auth, profile, categories, chipFilter } = this.props;
     if (!auth.uid) return <Redirect to="/login" />;
 
     if (isLoaded(profile) && categories.length) {
@@ -93,7 +87,6 @@ class HomePage extends React.Component {
                   posts={category.posts}
                   category={category.name}
                   tagNames={category.tagNames}
-                  upvotes={upvotes}
                   chipFilter={chipFilter}
                 />
               ))}
@@ -119,21 +112,17 @@ HomePage.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  // console.log(state.chipFilter);
+  // console.log(state);
   return {
     auth: state.firebase.auth,
     profile: state.firebase.profile,
     categories: state.firestore.ordered.categories,
     chipFilter: state.chipFilter,
-    upvotes: state.upvotes.upvotes,
   };
 };
 
 export default compose(
-  connect(
-    mapStateToProps,
-    { getUpvotes }
-  ),
+  connect(mapStateToProps),
   // connect component with firestoreReducer
   firestoreConnect([
     // connect component to specific collection in firestore
