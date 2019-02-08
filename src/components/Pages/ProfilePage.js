@@ -10,7 +10,7 @@ import Avatar from '@material-ui/core/Avatar';
 import red from '@material-ui/core/colors/red';
 import Toolbar from '../Toolbar/Toolbar';
 import CardMinimizedPost from '../Cards/CardMinimizedPost';
-import { sortPosts } from '../../utils';
+import { sortPosts } from '../../utils/index';
 
 const styles = (theme) => ({
   profileWrapper: {

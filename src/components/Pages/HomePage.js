@@ -10,7 +10,7 @@ import SideNavigation from '../SideNavigation';
 import CardAddPost from '../Cards/CardAddPost';
 import ChipMinimizedPost, { ChipCategory } from '../Chips/ChipMinimizedPost';
 import CardMinimizedPost from '../Cards/CardMinimizedPost';
-import { formatCategory, sortPosts } from '../../utils';
+import { formatCategory, sortPosts } from '../../utils/index';
 import './HomePage.css';
 
 const Category = ({ posts, category, tagNames, chipFilter }) => {

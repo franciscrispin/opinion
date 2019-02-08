@@ -9,7 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import TrendingIcon from '@material-ui/icons/TrendingUp';
 import ControversialIcon from '@material-ui/icons/OfflineBolt';
 import DeepDiveIcon from '@material-ui/icons/AllOut';
-import { formatCategory } from '../utils';
+import { formatCategory } from '../utils/index';
 
 const styles = (theme) => ({
   root: {
