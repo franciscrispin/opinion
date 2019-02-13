@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -16,13 +16,13 @@ const styles = (theme) => ({
   },
   paper: {
     position: 'absolute',
-    width: theme.spacing.unit * 40,
+    top: '50%',
+    left: '50%',
     backgroundColor: theme.palette.background.paper,
+    width: theme.spacing.unit * 40,
     boxShadow: theme.shadows[5],
     borderRadius: 4,
     outline: 'none',
-    top: '50%',
-    left: '50%',
     transform: 'translate(-50%, -50%)',
     [theme.breakpoints.up('sm')]: {
       width: theme.spacing.unit * 50,

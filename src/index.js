@@ -12,7 +12,6 @@ import './index.css';
 const rrfConfig = {
   userProfile: 'users', // sync collection with profile object on state
   useFirestoreForProfile: true, // Firestore for Profile instead of Realtime DB
-  // firebaseStateName: 'firebase',
 };
 
 const store = configureStore();

@@ -3,71 +3,42 @@ import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { firestoreConnect, isLoaded } from 'react-redux-firebase';
-import Typography from '@material-ui/core/Typography';
+import { firestoreConnect } from 'react-redux-firebase';
 import Toolbar from '../Toolbar/Toolbar';
 import SideNavigation from '../SideNavigation';
 import CardAddPost from '../Cards/CardAddPost';
-import ChipMinimizedPost, { ChipCategory } from '../Chips/ChipMinimizedPost';
-import CardMinimizedPost from '../Cards/CardMinimizedPost';
-import { formatCategory, sortPosts } from '../../utils/index';
+import Category from '../Category';
+import { setUpvoteState } from '../../actions/upvoteActions';
+import { upvotesReducer } from '../../utils/index';
 import './HomePage.css';
 
-const Category = ({ posts, category, tagNames, chipFilter }) => {
-  // sort post by date created
-  const sortedPosts = sortPosts(posts);
-
-  // filter post by tag filter
-  const categoryLower = formatCategory(category);
-  const tagFilter = chipFilter[categoryLower];
-  const filteredPosts = sortedPosts
-    .map((post) => {
-      const show = post.tagNames.some((tag) => tagFilter[tag] === true);
-      return { ...post, show };
-    })
-    .filter((post) => post.show !== false);
-
-  const displayPosts = filteredPosts.length ? (
-    filteredPosts.map((post) => (
-      <CardMinimizedPost key={post.id} posts={post} />
-    ))
-  ) : (
-    <Typography variant="subheading" paragraph>
-      No posts yet!
-    </Typography>
-  );
-
-  return (
-    <div id={formatCategory(category)}>
-      <div className="chip-wrapper">
-        <ChipMinimizedPost
-          children={<ChipCategory category={category} />}
-          tags={tagNames}
-          category={category}
-        />
-      </div>
-      <div className="card-wrapper">{displayPosts}</div>
-    </div>
-  );
-};
-
-Category.defaultProps = {
-  posts: [],
-};
-
-Category.propTypes = {
-  posts: PropTypes.array.isRequired,
-  category: PropTypes.string.isRequired,
-  tagNames: PropTypes.array.isRequired,
-  chipFilter: PropTypes.object.isRequired,
-};
-
 class HomePage extends React.Component {
-  render() {
-    const { auth, profile, categories, chipFilter } = this.props;
-    if (!auth.uid) return <Redirect to="/login" />;
+  componentDidUpdate() {
+    const { auth, posts, users } = this.props;
 
-    if (isLoaded(profile) && categories.length) {
+    if (posts.length && auth.uid && Object.keys(users).length) {
+      const userUpvotedPosts = users[auth.uid].upvoted;
+      const upvoteState = posts
+        .map((post) => ({
+          id: post.id,
+          upvotes: post.upvotes,
+          isActive: userUpvotedPosts.some((id) => id === post.id),
+        }))
+        .reduce(upvotesReducer, {});
+      this.props.setUpvoteState(upvoteState);
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.location.hash === nextProps.location.hash;
+  }
+
+  render() {
+    const { auth, profile, categories, chipFilter, posts } = this.props;
+    const uid = auth.uid;
+    if (!uid) return <Redirect to="/login" />;
+
+    if (posts.length && categories.length) {
       return (
         <div>
           <Toolbar profile={profile} />
@@ -103,12 +74,17 @@ class HomePage extends React.Component {
 
 HomePage.defaultProps = {
   categories: [],
+  users: {},
+  posts: [],
 };
 
 HomePage.propTypes = {
   auth: PropTypes.object.isRequired,
   categories: PropTypes.array.isRequired,
   profile: PropTypes.object.isRequired,
+  chipFilter: PropTypes.object.isRequired,
+  users: PropTypes.object.isRequired,
+  posts: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -117,15 +93,22 @@ const mapStateToProps = (state) => {
     auth: state.firebase.auth,
     profile: state.firebase.profile,
     categories: state.firestore.ordered.categories,
+    posts: state.firestore.ordered.posts,
+    users: state.firestore.data.users,
     chipFilter: state.chipFilter,
   };
 };
 
 export default compose(
-  connect(mapStateToProps),
+  connect(
+    mapStateToProps,
+    { setUpvoteState }
+  ),
   // connect component with firestoreReducer
   firestoreConnect([
     // connect component to specific collection in firestore
     { collection: 'categories' },
+    { collection: 'users' },
+    { collection: 'posts' },
   ])
 )(HomePage);

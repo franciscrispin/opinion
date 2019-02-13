@@ -14,6 +14,9 @@ export const logout = (firebase) => async (dispatch) => {
   dispatch({ type: 'LOGOUT' });
 };
 
+const capitalize = (name) =>
+  name[0].toUpperCase() + name.slice(1).toLowerCase();
+
 export const signup = (newUser, firebase) => async (
   dispatch,
   getState,
@@ -25,14 +28,19 @@ export const signup = (newUser, firebase) => async (
     const response = await firebase
       .auth()
       .createUserWithEmailAndPassword(newUser.email, newUser.password);
+    const firstName = capitalize(newUser.firstName);
+    const lastName = capitalize(newUser.lastName);
+    const initials = firstName[0] + lastName[0];
+
     await firestore
       .collection('users')
       .doc(response.user.uid)
       .set({
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        initials: newUser.firstName[0] + newUser.lastName[0],
+        firstName,
+        lastName,
+        initials,
         posts: [],
+        upvoted: [],
       });
     dispatch({ type: 'SIGNUP_SUCCESS' });
   } catch (err) {

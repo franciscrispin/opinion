@@ -32,15 +32,15 @@ const CardExpanded = ({ classes, post, profile }) => {
     <div className={classes.card}>
       <CardHeader
         title={title}
-        classes={{ title: classes.title }}
         className={classes.cardHeader}
+        classes={{ title: classes.title }}
       />
       <Divider className={classes.divider} />
       <CardContent
         content={description}
         children={<CardUserInfo data={post} />}
       />
-      <CardActions cardData={post} />
+      <CardActions data={post} />
       <CardCommentBox profile={profile} />
       <Divider className={classes.divider} />
     </div>

@@ -145,3 +145,41 @@ exports.postDeleted = functions.firestore
         })
         console.log(`deleted comments ${commentIds} from comments`)
     })
+
+exports.userDeleted = functions.firestore
+    .document('users/{userId}')
+    .onDelete((snap) => {
+        const posts = snap.data().posts
+        const postIds = posts.map(post => post.id)
+        console.log(postIds)
+
+        postIds.forEach(async (id) => {
+            await admin.firestore().collection('posts')
+                .doc(id)
+                .delete()
+        })
+        console.log(`deleted all user posts ${postIds}`)
+
+    })
+
+exports.commentDeleted = functions.firestore
+    .document('comments/{commentId}')
+    .onDelete(async (snap) => {
+        const deletedComment = snap.data()
+        const { postId } = deletedComment
+
+        // get the number of comments in the previous post
+        const postDoc = await admin.firestore().collection('posts')
+            .doc(postId)
+            .get()
+        const { comments } = postDoc.data()
+
+        // remove the deleted comment from the post document
+        await admin.firestore().collection('posts')
+            .doc(postId)
+            .update({
+                commentList: admin.firestore.FieldValue.arrayRemove(deletedComment),
+                comments: comments - 1
+            })
+        console.log(`comment removed from post ${postId}`, deletedComment)
+    })

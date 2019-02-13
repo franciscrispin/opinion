@@ -22,12 +22,12 @@ const styles = (theme) => ({
     marginBottom: 16,
     marginRight: 8,
     [theme.breakpoints.down('xs')]: {
-      fontSize: '0.8em',
       maxWidth: '135px',
+      fontSize: '0.8em',
     },
     [theme.breakpoints.up('sm')]: {
-      fontSize: '0.9em',
       maxWidth: '160px',
+      fontSize: '0.9em',
     },
   },
   button: {

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { isLoaded } from 'react-redux-firebase';
@@ -10,8 +11,8 @@ import Signup from './Auth/Signup';
 
 class App extends React.Component {
   render() {
-    const { auth } = this.props;
-    if (isLoaded(auth)) {
+    const { auth, profile } = this.props;
+    if (isLoaded(auth) && isLoaded(profile)) {
       return (
         <BrowserRouter>
           <Switch>
@@ -30,8 +31,14 @@ class App extends React.Component {
   }
 }
 
+App.propTypes = {
+  auth: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
+};
+
 const mapStateToProps = (state) => ({
   auth: state.firebase.auth,
+  profile: state.firebase.profile,
 });
 
 export default connect(mapStateToProps)(App);

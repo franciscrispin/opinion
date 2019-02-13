@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import CardContent from './CardContent';
-import CardActions from './CardActions';
 import CardUserInfo from './CardUserInfo';
 
 const styles = (theme) => ({
@@ -19,8 +18,8 @@ const styles = (theme) => ({
     fontWeight: 'bold',
   },
   divider: {
-    marginLeft: 16,
-    marginRight: 16,
+    marginLeft: theme.spacing.unit * 2,
+    marginRight: theme.spacing.unit * 2,
   },
 });
 
@@ -31,7 +30,6 @@ const CardExpanded = ({ classes, comment }) => {
         content={comment.description}
         children={<CardUserInfo data={comment} />}
       />
-      <CardActions cardData={comment} showComments={false} />
       <Divider className={classes.divider} />
     </div>
   );

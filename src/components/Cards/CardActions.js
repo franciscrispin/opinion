@@ -9,7 +9,11 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import UpvotePublishIcon from '@material-ui/icons/Publish';
 import CommentIcon from '@material-ui/icons/Comment';
-import { upvote } from '../../actions/upvoteActions';
+import {
+  updateUpvotes,
+  toggleUpvote,
+  setUpvoteState,
+} from '../../actions/upvoteActions';
 
 const styles = (theme) => ({
   actions: {
@@ -38,89 +42,82 @@ const styles = (theme) => ({
 });
 
 class MainCardActions extends React.Component {
-  state = { isActive: false, upvotes: 0 };
+  state = {};
 
   componentDidMount() {
-    this.setState({ upvotes: this.props.cardData.upvotes });
-  }
-
-  componentDidUpdate() {
-    if (
-      !this.state.isActive &&
-      this.props.cardData.upvotes !== this.state.upvotes
-    ) {
-      this.setState({ upvotes: this.props.cardData.upvotes });
-    }
+    this.setState({ ...this.props.upvotes[this.props.data.id] });
+    // window.addEventListener('beforeunload', this.handleUnmount);
   }
 
   componentWillUnmount() {
-    const { upvotes, id } = this.props.cardData;
-    if (upvotes !== this.state.upvotes) {
-      this.props.upvote(id, this.state.upvotes);
-    }
+    this.handleUnmount();
+    // window.removeEventListener('beforeunload', this.handleUnmount);
   }
 
+  handleUnmount = () => {
+    if (this.state !== this.props.upvotes[this.props.data.id]) {
+      this.props.updateUpvotes(this.props.data.id, this.state.upvotes);
+    }
+  };
+
   handleUpvote = () => {
-    this.setState((prevState) => {
-      const upvotes = prevState.isActive
-        ? prevState.upvotes - 1
-        : prevState.upvotes + 1;
-      return {
-        isActive: !prevState.isActive,
-        upvotes,
-      };
-    });
+    this.props.toggleUpvote(this.props.data.id);
   };
 
   render() {
-    const { classes, cardData, children } = this.props;
-    const color = this.state.isActive ? { color: '#329bff' } : null;
-    const postId = this.props.cardData.id;
+    const { classes, data, upvotes, children } = this.props;
+    const id = this.props.data.id;
 
-    // if (upvotes && upvotes.length) {
-    return (
-      <CardActions className={classes.actions} disableActionSpacing>
-        <IconButton
-          aria-label="Upvotes"
-          classes={{ root: classes.iconButton }}
-          style={color}
-          onClick={this.handleUpvote}
-        >
-          <UpvotePublishIcon />
-          <Typography className={classes.upvotes} paragraph style={color}>
-            {this.state.upvotes}
-          </Typography>
-        </IconButton>
-        <NavLink className={classes.navLink} to={`/post/${postId}`}>
+    if (Object.keys(upvotes).length) {
+      const postUpvotes = upvotes[id];
+      const color = postUpvotes.isActive ? { color: '#329bff' } : null;
+
+      return (
+        <CardActions className={classes.actions} disableActionSpacing>
           <IconButton
-            aria-label="Comments"
-            style={{ display: 'block' }}
+            aria-label="Upvotes"
             classes={{ root: classes.iconButton }}
+            style={color}
+            onClick={this.handleUpvote}
           >
-            <CommentIcon />
-            <Typography className={classes.comments} paragraph>
-              {cardData.comments}
+            <UpvotePublishIcon />
+            <Typography className={classes.upvotes} paragraph style={color}>
+              {postUpvotes.upvotes}
             </Typography>
           </IconButton>
-        </NavLink>
-        {children}
-      </CardActions>
-    );
-    // } else {
-    //   return null;
-    // }
+          <NavLink className={classes.navLink} to={`/post/${id}`}>
+            <IconButton
+              aria-label="Comments"
+              style={{ display: 'block' }}
+              classes={{ root: classes.iconButton }}
+            >
+              <CommentIcon />
+              <Typography className={classes.comments} paragraph>
+                {data.comments}
+              </Typography>
+            </IconButton>
+          </NavLink>
+          {children}
+        </CardActions>
+      );
+    } else {
+      return null;
+    }
   }
 }
 
 MainCardActions.propTypes = {
   classes: PropTypes.object.isRequired,
-  cardData: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired,
+  upvotes: PropTypes.object.isRequired,
 };
+
+const mapStateToProps = (state) => ({ upvotes: state.upvote });
 
 export default compose(
   withStyles(styles),
   connect(
-    null,
-    { upvote }
+    mapStateToProps,
+    { updateUpvotes, toggleUpvote, setUpvoteState }
   )
 )(MainCardActions);

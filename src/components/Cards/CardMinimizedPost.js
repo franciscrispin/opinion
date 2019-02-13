@@ -13,24 +13,7 @@ import Divider from '@material-ui/core/Divider';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CardParagraph from './CardParagraph';
 import CardActions from './CardActions';
-
-const truncate = (text) => {
-  const maxLen = 115;
-  if (text.length > maxLen) {
-    const lastWordIdx = text
-      .split('')
-      .slice(0, maxLen)
-      .join('')
-      .lastIndexOf(' ');
-    return (
-      text
-        .split('')
-        .slice(0, lastWordIdx)
-        .join('') + ' ...'
-    );
-  }
-  return text;
-};
+import { truncate } from '../../utils/index';
 
 const styles = (theme) => ({
   card: {
@@ -84,7 +67,14 @@ const ExpandAction = ({ classExpand, classOpen, onClick, expanded }) => {
   );
 };
 
-class CardHome extends React.Component {
+ExpandAction.propTypes = {
+  classExpand: PropTypes.string.isRequired,
+  classOpen: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  expanded: PropTypes.bool.isRequired,
+};
+
+class CardMinimizedPost extends React.Component {
   state = { expanded: false };
 
   handleExpandClick = () => {
@@ -112,20 +102,20 @@ class CardHome extends React.Component {
             </NavLink>
           }
           subheader={
-            <NavLink className={classes.navLink} to={'/profile'}>
+            <div>
               {authorFirstName} {authorLastName},{' '}
               {moment(createdAt.toDate()).calendar()}
-            </NavLink>
+            </div>
           }
           classes={{ title: classes.title, subheader: classes.subheader }}
           className={classes.cardHeader}
         />
         <CardActions
-          cardData={posts}
+          data={posts}
           children={
             <ExpandAction
               classExpand={classes.expand}
-              classExpandOpen={classes.expandOpen}
+              classOpen={classes.expandOpen}
               onClick={this.handleExpandClick}
               expanded={this.state.expanded}
             />
@@ -142,9 +132,9 @@ class CardHome extends React.Component {
   }
 }
 
-CardHome.propTypes = {
+CardMinimizedPost.propTypes = {
   classes: PropTypes.object.isRequired,
   posts: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(CardHome);
+export default withStyles(styles)(CardMinimizedPost);

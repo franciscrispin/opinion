@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { firestoreConnect, isLoaded } from 'react-redux-firebase';
+import { firestoreConnect } from 'react-redux-firebase';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
@@ -33,17 +33,17 @@ const styles = (theme) => ({
     [theme.breakpoints.down('xs')]: {
       width: 72,
       height: 72,
-      fontSize: '2.5em',
+      fontSize: '2em',
     },
     [theme.breakpoints.up('sm')]: {
       width: 96,
       height: 96,
-      fontSize: '3em',
+      fontSize: '2.5em',
     },
     [theme.breakpoints.up('md')]: {
       width: 112,
       height: 112,
-      fontSize: '4em',
+      fontSize: '3em',
     },
   },
   username: {
@@ -63,10 +63,12 @@ const styles = (theme) => ({
 class Profile extends React.Component {
   render() {
     const { classes, profile, users, auth } = this.props;
+    const uid = auth.uid;
 
-    if (isLoaded(profile) && users) {
-      const { posts } = users[auth.uid];
+    if (Object.keys(users).length) {
+      const { posts } = users[uid];
       const sortedPosts = sortPosts(posts);
+      const userUpvotedPosts = users[uid].upvoted;
 
       return (
         <div>
@@ -74,7 +76,7 @@ class Profile extends React.Component {
           <div className={classes.profileWrapper}>
             <div className={classes.profileHeader}>
               <Avatar className={classes.avatar} aria-label="Opinion Post">
-                F
+                {profile.initials}
               </Avatar>
               <Typography variant="h5" className={classes.username}>
                 {profile.firstName} {profile.lastName}
@@ -88,7 +90,11 @@ class Profile extends React.Component {
               <Divider className={classes.bodyDivider} light={true} />
               {sortedPosts &&
                 sortedPosts.map((post) => (
-                  <CardMinimizedPost key={post.id} posts={post} />
+                  <CardMinimizedPost
+                    key={post.id}
+                    posts={post}
+                    userUpvotedPosts={userUpvotedPosts}
+                  />
                 ))}
             </div>
           </div>
@@ -100,8 +106,15 @@ class Profile extends React.Component {
   }
 }
 
+Profile.defaultProps = {
+  users: {},
+};
+
 Profile.propTypes = {
   classes: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
+  users: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => {

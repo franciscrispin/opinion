@@ -18,8 +18,16 @@ export const addComment = (comment, postId) => async (
   };
 
   try {
-    // add comment to collection
+    // add comment to comment collection
     const doc = await firestore.collection('comments').add(newComment);
+
+    // add comment id to comment collection
+    await firestore
+      .collection('comments')
+      .doc(doc.id)
+      .update({
+        id: doc.id,
+      });
 
     // increment number of comments
     const snapshot = await firestore

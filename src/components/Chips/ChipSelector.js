@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -73,11 +73,11 @@ class Selector extends React.Component {
             }}
           >
             <MenuItem value="">Add Topic</MenuItem>
-            <MenuItem value={0}>social media influencers</MenuItem>
-            <MenuItem value={1}>national service</MenuItem>
-            <MenuItem value={2}>psle</MenuItem>
-            <MenuItem value={3}>cpf</MenuItem>
-            <MenuItem value={4}>inequality</MenuItem>
+            <MenuItem value={0}>Social Media Influencers</MenuItem>
+            <MenuItem value={1}>National Service</MenuItem>
+            <MenuItem value={2}>Psle</MenuItem>
+            <MenuItem value={3}>CPF</MenuItem>
+            <MenuItem value={4}>Inequality</MenuItem>
           </Select>
         </FormControl>
       </form>

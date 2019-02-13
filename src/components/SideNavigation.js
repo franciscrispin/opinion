@@ -13,8 +13,8 @@ import { formatCategory } from '../utils/index';
 
 const styles = (theme) => ({
   root: {
-    width: 190,
     backgroundColor: theme.palette.background.paper,
+    width: 190,
   },
   anchorTag: {
     textDecoration: 'none',
