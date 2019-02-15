@@ -13,8 +13,8 @@ Password: password
 ## Project Screen Shots
 
 ![Home](https://duaw26jehqd4r.cloudfront.net/items/1M3B3V0R0D3J041D2t3j/Image%202019-02-15%20at%2010.34.33%20AM.png)
-![Profile](https://duaw26jehqd4r.cloudfront.net/items/2I0f0k0X1z432L1v3p2O/Image%202019-02-15%20at%2010.36.29%20AM.png)
 ![Post](https://duaw26jehqd4r.cloudfront.net/items/3P2N1e33470W080q1d07/Image%202019-02-15%20at%2010.38.24%20AM.png)
+![Web](https://duaw26jehqd4r.cloudfront.net/items/0I001S233a0J1t421A1d/Image%202019-02-15%20at%2010.49.50%20AM.png)
 
 ## Reflection
 
