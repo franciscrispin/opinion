@@ -10,6 +10,8 @@ import Avatar from '@material-ui/core/Avatar';
 import red from '@material-ui/core/colors/red';
 import Toolbar from '../Toolbar/Toolbar';
 import CardMinimizedPost from '../Cards/CardMinimizedPost';
+import { setUpvoteState } from '../../actions/upvoteActions';
+import { updatePostUpvotes } from '../../utils/index';
 import { sortPosts } from '../../utils/index';
 
 const styles = (theme) => ({
@@ -61,14 +63,31 @@ const styles = (theme) => ({
 });
 
 class Profile extends React.Component {
+  componentDidUpdate() {
+    const { auth, posts, users } = this.props;
+    updatePostUpvotes(auth, posts, users, this.props.setUpvoteState);
+  }
+
   render() {
-    const { classes, profile, users, auth } = this.props;
+    const {
+      classes,
+      profile,
+      users,
+      auth,
+      posts,
+      isUpvoteUpdated,
+    } = this.props;
     const uid = auth.uid;
 
-    if (Object.keys(users).length) {
+    if (posts.length && Object.keys(users).length && isUpvoteUpdated) {
       const { posts } = users[uid];
       const sortedPosts = sortPosts(posts);
-      const userUpvotedPosts = users[uid].upvoted;
+
+      const displayPosts = sortedPosts.length
+        ? sortedPosts.map((post) => (
+            <CardMinimizedPost key={post.id} posts={post} />
+          ))
+        : 'No posts yet!';
 
       return (
         <div>
@@ -88,14 +107,7 @@ class Profile extends React.Component {
                 {profile.firstName}'s Posts
               </Typography>
               <Divider className={classes.bodyDivider} light={true} />
-              {sortedPosts &&
-                sortedPosts.map((post) => (
-                  <CardMinimizedPost
-                    key={post.id}
-                    posts={post}
-                    userUpvotedPosts={userUpvotedPosts}
-                  />
-                ))}
+              {displayPosts}
             </div>
           </div>
         </div>
@@ -108,25 +120,34 @@ class Profile extends React.Component {
 
 Profile.defaultProps = {
   users: {},
+  posts: [],
 };
 
 Profile.propTypes = {
   classes: PropTypes.object.isRequired,
-  profile: PropTypes.object.isRequired,
-  users: PropTypes.object.isRequired,
   auth: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
+  posts: PropTypes.array.isRequired,
+  users: PropTypes.object.isRequired,
+  isUpvoteUpdated: PropTypes.bool.isRequired,
+  setUpvoteState: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
   return {
     auth: state.firebase.auth,
     profile: state.firebase.profile,
+    posts: state.firestore.ordered.posts,
     users: state.firestore.data.users,
+    isUpvoteUpdated: state.upvote.isUpdated,
   };
 };
 
 export default compose(
   withStyles(styles),
-  connect(mapStateToProps),
-  firestoreConnect([{ collection: 'users' }])
+  connect(
+    mapStateToProps,
+    { setUpvoteState }
+  ),
+  firestoreConnect([{ collection: 'users' }, { collection: 'posts' }])
 )(Profile);

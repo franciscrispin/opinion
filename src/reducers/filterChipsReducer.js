@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 
+// create a reducer to filter the chips for the 3 categories
 const createFilterReducer = (type) => {
   const TYPE = type.toUpperCase();
   const filter = (state = {}, action) => {

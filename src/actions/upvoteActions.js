@@ -3,29 +3,42 @@ export const updateUpvotes = (postId, prevUpvotes) => async (
   getState,
   getFirestore
 ) => {
+  dispatch({ type: 'UPVOTE_REQUEST' });
   const firestore = getFirestore();
   const uid = getState().firebase.auth.uid;
-  const upvotes = getState().upvote[postId].upvotes;
+  const upvotes = getState().upvote.upvoteState[postId].upvotes;
 
   try {
+    // if upvoted, add the post id of the upvoted post to the users document
+    // update the number of upvotes in the post document
     if (upvotes > prevUpvotes) {
       await firestore
         .collection('users')
         .doc(uid)
         .update({ upvoted: firestore.FieldValue.arrayUnion(postId) });
+
+      await firestore
+        .collection('posts')
+        .doc(postId)
+        .update({ upvotes });
+
+      dispatch({ type: 'UPVOTE_SUCCESS' });
+
+      // if un-upvoted, remove the post id of the upvoted post from the users document
+      // update the number of upvotes in the post document
     } else if (upvotes < prevUpvotes) {
       await firestore
         .collection('users')
         .doc(uid)
         .update({ upvoted: firestore.FieldValue.arrayRemove(postId) });
+
+      await firestore
+        .collection('posts')
+        .doc(postId)
+        .update({ upvotes });
+
+      dispatch({ type: 'UPVOTE_SUCCESS' });
     }
-
-    await firestore
-      .collection('posts')
-      .doc(postId)
-      .update({ upvotes });
-
-    dispatch({ type: 'UPVOTE', postId });
   } catch (err) {
     dispatch({ type: 'UPVOTE_FAILURE' });
   }
@@ -40,34 +53,3 @@ export const toggleUpvote = (postId) => ({
   type: 'TOGGLE_UPVOTE',
   postId,
 });
-
-// export const setUpvoteState = (upvoteState) => async (
-//   dispatch,
-//   getState,
-//   getFirestore
-// ) => {
-//   const uid = getState().firebase.auth.uid;
-//   const firestore = getFirestore();
-
-//   try {
-//     const userDoc = await firestore
-//       .collection('users')
-//       .doc(uid)
-//       .get();
-//     const userUpvotedPosts = userDoc.data().upvoted;
-
-//     const postSnapshot = await firestore.collection('posts').get();
-//     const posts = postSnapshot.docs.map((post) => post.data());
-//   const upvoteState = posts
-//     .map((post) => ({
-//       id: post.id,
-//       upvotes: post.upvotes,
-//       isActive: userUpvotedPosts.some((id) => id === post.id),
-//     }))
-//     .reduce(upvotesReducer, {});
-
-//     // dispatch({ type: 'SET_UPVOTE_STATE', upvoteState });
-//   } catch (err) {
-//     dispatch({ type: 'SET_UPVOTE_STATE_FAILURE' });
-//   }
-// };

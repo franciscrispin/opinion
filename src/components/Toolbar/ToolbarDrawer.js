@@ -60,8 +60,7 @@ class MobileDrawer extends React.Component {
   };
 
   render() {
-    const { classes, profile, auth } = this.props;
-    const loggedIn = auth.uid;
+    const { classes, profile } = this.props;
 
     const sideList = (
       <div className={classes.list}>
@@ -72,11 +71,7 @@ class MobileDrawer extends React.Component {
                 <ProfileIcon />
               </ListItemIcon>
               <ListItemText
-                primary={
-                  loggedIn
-                    ? `${profile.firstName} ${profile.lastName}`
-                    : 'Login / Signup'
-                }
+                primary={`${profile.firstName} ${profile.lastName}`}
               />
             </ListItem>
           </NavLink>
@@ -107,16 +102,14 @@ class MobileDrawer extends React.Component {
           ))}
         </List>
         <Divider />
-        {loggedIn && (
-          <List>
-            <ListItem button onClick={this.handleClick}>
-              <ListItemIcon>
-                <LogoutIcon />
-              </ListItemIcon>
-              <ListItemText primary="Logout" />
-            </ListItem>
-          </List>
-        )}
+        <List>
+          <ListItem button onClick={this.handleClick}>
+            <ListItemIcon>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItem>
+        </List>
       </div>
     );
 
@@ -150,18 +143,11 @@ MobileDrawer.propTypes = {
   profile: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  // console.log(state);
-  return {
-    auth: state.firebase.auth,
-  };
-};
-
 export default compose(
   withStyles(styles),
   firebaseConnect(),
   connect(
-    mapStateToProps,
+    null,
     { logout }
   )
 )(MobileDrawer);

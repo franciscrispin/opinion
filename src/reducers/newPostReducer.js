@@ -11,6 +11,7 @@ const postReducer = (state = { postError: null }, action) => {
   }
 };
 
+// set the state of the chips selected for the new post
 const chipReducer = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_CHIP':

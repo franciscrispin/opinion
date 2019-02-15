@@ -58,9 +58,8 @@ class MenuListComposition extends React.Component {
   };
 
   render() {
-    const { classes, auth } = this.props;
+    const { classes } = this.props;
     const { open } = this.state;
-    const loggedIn = auth.uid;
 
     return (
       <div className={classes.root}>
@@ -90,32 +89,16 @@ class MenuListComposition extends React.Component {
               <Paper className={classes.paper}>
                 <ClickAwayListener onClickAway={this.handleClose}>
                   <MenuList>
-                    <MenuItem onClick={this.handleClose}>
-                      {loggedIn ? (
-                        <NavLink className={classes.navLink} to={'/profile'}>
-                          Profile
-                        </NavLink>
-                      ) : (
-                        <NavLink className={classes.navLink} to={'/login'}>
-                          Login
-                        </NavLink>
-                      )}
-                    </MenuItem>
-                    <MenuItem onClick={this.handleClose}>
-                      {loggedIn ? (
-                        <NavLink
-                          className={classes.navLink}
-                          onClick={this.handleLogout}
-                          to="/login"
-                        >
-                          Logout
-                        </NavLink>
-                      ) : (
-                        <NavLink className={classes.navLink} to={'/signup'}>
-                          Signup
-                        </NavLink>
-                      )}
-                    </MenuItem>
+                    <NavLink className={classes.navLink} to="/profile">
+                      <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+                    </NavLink>
+                    <NavLink
+                      className={classes.navLink}
+                      onClick={this.handleLogout}
+                      to="/login"
+                    >
+                      <MenuItem onClick={this.handleClose}>Logout</MenuItem>
+                    </NavLink>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
@@ -131,18 +114,11 @@ MenuListComposition.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  // console.log(state);
-  return {
-    auth: state.firebase.auth,
-  };
-};
-
 export default compose(
   withStyles(styles),
   firebaseConnect(),
   connect(
-    mapStateToProps,
+    null,
     { logout }
   )
 )(MenuListComposition);

@@ -24,8 +24,24 @@ export const truncate = (text) => {
   return text;
 };
 
-// reduce post array to an object with ids as keys
-export const upvotesReducer = (a, b) => ({
+// reducer fuction to reduce post array to an object
+// set post ids as keys and upvote state as values
+const upvotesReducer = (a, b) => ({
   ...a,
   [b.id]: { upvotes: b.upvotes, isActive: b.isActive },
 });
+
+// updates the state with the no. of upvotes and is upvoted status for each post
+export const updatePostUpvotes = (auth, posts, users, setUpvoteState) => {
+  if (posts.length && auth.uid && Object.keys(users).length) {
+    const userUpvotedPosts = users[auth.uid].upvoted;
+    const upvoteState = posts
+      .map((post) => ({
+        id: post.id,
+        upvotes: post.upvotes,
+        isActive: userUpvotedPosts.some((id) => id === post.id),
+      }))
+      .reduce(upvotesReducer, {});
+    setUpvoteState(upvoteState);
+  }
+};

@@ -1,9 +1,8 @@
+import { combineReducers } from 'redux';
+
+// set the is upvoted status and the no. of upvotes for each post
 const upvoteReducer = (state = {}, action) => {
   switch (action.type) {
-    case 'UPVOTE':
-      return state;
-    case 'UPVOTE_FAILURE':
-      return state;
     case 'TOGGLE_UPVOTE':
       return {
         ...state,
@@ -21,4 +20,20 @@ const upvoteReducer = (state = {}, action) => {
   }
 };
 
-export default upvoteReducer;
+// set the status of whether the no. of upvotes in the database are updated
+const updateUpvoteReducer = (state = true, action) => {
+  switch (action.type) {
+    case 'UPVOTE_REQUEST':
+      return false;
+    case 'UPVOTE_SUCCESS':
+    case 'UPVOTE_FAILURE':
+      return true;
+    default:
+      return state;
+  }
+};
+
+export default combineReducers({
+  upvoteState: upvoteReducer,
+  isUpdated: updateUpvoteReducer,
+});

@@ -6,6 +6,8 @@ export const addComment = (comment, postId) => async (
   const firestore = getFirestore();
   const profile = getState().firebase.profile;
   const authorId = getState().firebase.auth.uid;
+
+  // add fields to comment
   const newComment = {
     postId,
     authorId,
@@ -18,10 +20,10 @@ export const addComment = (comment, postId) => async (
   };
 
   try {
-    // add comment to comment collection
+    // add comment to comments collection
     const doc = await firestore.collection('comments').add(newComment);
 
-    // add comment id to comment collection
+    // add comment id to comment document
     await firestore
       .collection('comments')
       .doc(doc.id)
@@ -29,14 +31,15 @@ export const addComment = (comment, postId) => async (
         id: doc.id,
       });
 
-    // increment number of comments
+    // get previous no. of comments from posts
+    // increment number of comments in post document
     const snapshot = await firestore
       .collection('posts')
       .doc(postId)
       .get();
     let comments = snapshot.data().comments + 1;
 
-    // add new comment and comment id to post
+    // add comment and updated no. of comments to post document
     await firestore
       .collection('posts')
       .doc(postId)

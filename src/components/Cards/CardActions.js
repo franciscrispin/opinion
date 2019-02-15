@@ -49,14 +49,26 @@ class MainCardActions extends React.Component {
     // window.addEventListener('beforeunload', this.handleUnmount);
   }
 
+  componentDidUpdate() {
+    if (!Object.keys(this.state).length) {
+      this.setState({ ...this.props.upvotes[this.props.data.id] });
+    }
+  }
+
   componentWillUnmount() {
     this.handleUnmount();
     // window.removeEventListener('beforeunload', this.handleUnmount);
   }
 
   handleUnmount = () => {
-    if (this.state !== this.props.upvotes[this.props.data.id]) {
-      this.props.updateUpvotes(this.props.data.id, this.state.upvotes);
+    const id = this.props.data.id;
+    const { isActive: stateIsActive, upvotes: stateUpvotes } = this.state;
+    const {
+      isActive: propsIsActive,
+      upvotes: propsUpvotes,
+    } = this.props.upvotes[id];
+    if (stateUpvotes !== propsUpvotes || stateIsActive !== propsIsActive) {
+      this.props.updateUpvotes(id, stateUpvotes);
     }
   };
 
@@ -112,7 +124,7 @@ MainCardActions.propTypes = {
   upvotes: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => ({ upvotes: state.upvote });
+const mapStateToProps = (state) => ({ upvotes: state.upvote.upvoteState });
 
 export default compose(
   withStyles(styles),

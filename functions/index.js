@@ -28,7 +28,7 @@ exports.postCreated = functions.firestore
         await admin.firestore().collection('posts')
             .doc(doc.id)
             .update({ id: doc.id, tagNames })
-        console.log('post updated', postWithId)
+        console.log(`post id and tag names ${tagNames} fields added to post ${doc.id}`)
 
         // add post and tag names to category document
         await admin.firestore().collection('categories')
@@ -37,7 +37,7 @@ exports.postCreated = functions.firestore
                 posts: admin.firestore.FieldValue.arrayUnion(postWithId),
                 tagNames: admin.firestore.FieldValue.arrayUnion(...tagNames),
             })
-        console.log(`post added to category ${categoryId}`, postWithId)
+        console.log(`post ${doc.id} and tag names ${tagNames} fields added to category ${categoryId}`)
 
         // add post to users document
         await admin.firestore().collection('users')
@@ -45,7 +45,7 @@ exports.postCreated = functions.firestore
             .update({
                 posts: admin.firestore.FieldValue.arrayUnion(postWithId)
             })
-        console.log(`post added to user ${authorId}`)
+        console.log(`post ${doc.id} added to user ${authorId}`)
     })
 
 exports.postUpdated = functions.firestore
@@ -61,21 +61,14 @@ exports.postUpdated = functions.firestore
             .get()
         const categoryPosts = categoryDoc.data().posts
 
-        // remove the old post from the category document
+        // replace the old post with the new post in the category document
+        const newCategoryPosts = [...categoryPosts.filter(post => post.id !== postId), newPost]
         await admin.firestore().collection('categories')
             .doc(`${categoryId}`)
             .update({
-                posts: categoryPosts.filter(post => post.id !== postId),
+                posts: newCategoryPosts,
             })
-        console.log(`post ${postId} removed from category ${categoryId}`)
-
-        // add the new post to the category document
-        await admin.firestore().collection('categories')
-            .doc(`${categoryId}`)
-            .update({
-                posts: admin.firestore.FieldValue.arrayUnion(newPost),
-            })
-        console.log(`post added in category ${categoryId}`, newPost)
+        console.log(`new post replaced old post ${postId} in category ${categoryId}`)
 
         // get all posts from user document
         const userDoc = await admin.firestore().collection('users')
@@ -84,25 +77,19 @@ exports.postUpdated = functions.firestore
         const userPosts = userDoc.data().posts
 
         // remove the old post from the user document
+        const newUserPosts = [...userPosts.filter(post => post.id !== postId), newPost]
         await admin.firestore().collection('users')
             .doc(authorId)
             .update({
-                posts: userPosts.filter(post => post.id !== postId),
+                posts: newUserPosts,
             })
-        console.log(`post ${postId} removed from user ${authorId}`)
-
-        // add the new post to the user document
-        await admin.firestore().collection('users')
-            .doc(authorId)
-            .update({
-                posts: admin.firestore.FieldValue.arrayUnion(newPost)
-            })
-        console.log(`post added in user ${authorId}`, newPost)
+        console.log(`new post replaced old post ${postId} in user ${authorId}`)
     })
 
 exports.postDeleted = functions.firestore
     .document('posts/{postId}')
-    .onDelete(async (snap) => {
+    .onDelete(async (snap, context) => {
+        const postId = context.params.postId
         const deletedPost = snap.data()
         const { categoryId, authorId, commentList } = deletedPost
 
@@ -112,7 +99,7 @@ exports.postDeleted = functions.firestore
             .update({
                 posts: admin.firestore.FieldValue.arrayRemove(deletedPost),
             })
-        console.log(`post removed from category ${categoryId}`, deletedPost)
+        console.log(`post ${postId} removed from category ${categoryId}`)
 
         // reset the tagNames for the category document
         const categoryDoc = await admin.firestore().collection('categories')
@@ -126,7 +113,7 @@ exports.postDeleted = functions.firestore
             .update({
                 tagNames
             })
-        console.log('reset tag names', tagNames)
+        console.log('reset tag names for category ${categoryId}', tagNames)
 
         // remove the deleted post from the user document
         await admin.firestore().collection('users')
@@ -134,7 +121,7 @@ exports.postDeleted = functions.firestore
             .update({
                 posts: admin.firestore.FieldValue.arrayRemove(deletedPost)
             })
-        console.log(`post removed from user ${authorId}`, deletedPost)
+        console.log(`post ${postId} removed from user ${authorId}`)
 
         // get all comment IDs from the post
         const commentIds = commentList.map(comment => comment.id)
@@ -143,7 +130,7 @@ exports.postDeleted = functions.firestore
         commentIds.forEach(async (id) => {
             await admin.firestore().collection('comments').doc(id).delete()
         })
-        console.log(`deleted comments ${commentIds} from comments`)
+        console.log(`deleted comments ${commentIds} from comments collection`)
     })
 
 exports.userDeleted = functions.firestore

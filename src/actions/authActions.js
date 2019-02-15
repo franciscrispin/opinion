@@ -32,6 +32,7 @@ export const signup = (newUser, firebase) => async (
     const lastName = capitalize(newUser.lastName);
     const initials = firstName[0] + lastName[0];
 
+    // add user account to users collection
     await firestore
       .collection('users')
       .doc(response.user.uid)
@@ -40,7 +41,7 @@ export const signup = (newUser, firebase) => async (
         lastName,
         initials,
         posts: [],
-        upvoted: [],
+        upvoted: [], // store the ids of post that the user upvoted
       });
     dispatch({ type: 'SIGNUP_SUCCESS' });
   } catch (err) {
