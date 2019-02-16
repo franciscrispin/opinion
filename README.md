@@ -1,5 +1,7 @@
 ## Opinion
 
+*Completed on 12 Feb, 2019*
+
 An application where users can post opinions on current issues as well as like and comment on others' opinions. It is similar to Quora but instead of asking questions, users share their opinions.
 
 The application was built with React, Redux and Firebase and is hosted on Firebase Hosting. 
